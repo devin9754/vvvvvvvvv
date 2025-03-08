@@ -21,7 +21,7 @@ export default function Home() {
             <p className="text-lg text-blue-700 mb-6">
               We specialize in comprehensive digital solutions including SaaS,
               website design, hosting, development, refreshes, and SEO/Marketing
-              & Sales, specifically serving businesses in Chula Vista and San
+              &amp; Sales, specifically serving businesses in Chula Vista and San
               Diego County.
             </p>
             <p className="text-md text-gray-600 mb-6">
@@ -38,15 +38,15 @@ export default function Home() {
                 unique business requirements.
               </li>
               <li className="mb-2">
-                <strong>Website Design & Development:</strong> Modern,
+                <strong>Website Design &amp; Development:</strong> Modern,
                 responsive, and user-centric websites.
               </li>
               <li className="mb-2">
-                <strong>Website Hosting & Refreshes:</strong> Reliable hosting
+                <strong>Website Hosting &amp; Refreshes:</strong> Reliable hosting
                 with updates to keep your website cutting-edge.
               </li>
               <li className="mb-2">
-                <strong>SEO & Marketing:</strong> Targeted strategies for
+                <strong>SEO &amp; Marketing:</strong> Targeted strategies for
                 increased visibility and business growth.
               </li>
             </ul>
@@ -60,10 +60,7 @@ export default function Home() {
                 devin@digimodels.us
               </a>{" "}
               or call{" "}
-              <a
-                href="tel:+16197918817"
-                className="underline text-blue-800"
-              >
+              <a href="tel:+16197918817" className="underline text-blue-800">
                 (619) 791-8817
               </a>
             </p>
@@ -89,4 +86,3 @@ export default function Home() {
     </main>
   );
 }
-
