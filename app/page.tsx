@@ -3,18 +3,8 @@
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
-import { Auth } from "aws-amplify";
 
 export default function Home() {
-  // Trigger Cognito Hosted UI sign-in
-  const handleSignIn = async () => {
-    try {
-      await Auth.federatedSignIn();
-    } catch (error) {
-      console.error("Error during sign in:", error);
-    }
-  };
-
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-blue-50 text-center">
       <motion.div
@@ -78,10 +68,7 @@ export default function Home() {
               </a>
             </p>
 
-            <Button
-              onClick={handleSignIn}
-              className="bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-md"
-            >
+            <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-md">
               Get Started
             </Button>
           </CardContent>
