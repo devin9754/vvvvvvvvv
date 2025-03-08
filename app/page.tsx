@@ -5,6 +5,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
+  const handleSignIn = () => {
+    // Directly redirect the browser to your Cognito signon page.
+    window.location.href =
+      "https://us-east-113qoo9qxx.auth.us-east-1.amazoncognito.com/login?client_id=3rqonf5174ahom3o2djp6rfrkl&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fd84l1y8p4kdic.cloudfront.net";
+  };
+
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-blue-50 text-center">
       <motion.div
@@ -20,9 +26,8 @@ export default function Home() {
             </h1>
             <p className="text-lg text-blue-700 mb-6">
               We specialize in comprehensive digital solutions including SaaS,
-              website design, hosting, development, refreshes, and SEO/Marketing
-              & Sales, specifically serving businesses in Chula Vista and San
-              Diego County.
+              website design, hosting, development, refreshes, and SEO/Marketing &amp; Sales,
+              specifically serving businesses in Chula Vista and San Diego County.
             </p>
             <p className="text-md text-gray-600 mb-6">
               From startups needing a strong digital footprint to established
@@ -30,27 +35,21 @@ export default function Home() {
               DigiModels.Store and DigiModels.us deliver tailored solutions to
               elevate your digital presence.
             </p>
-
             {/* Centered bullet list */}
             <ul className="list-disc list-inside text-blue-700 mb-6 inline-block">
               <li className="mb-2">
-                <strong>SaaS Solutions:</strong> Customized software tailored for
-                unique business requirements.
+                <strong>SaaS Solutions:</strong> Customized software tailored for unique business requirements.
               </li>
               <li className="mb-2">
-                <strong>Website Design & Development:</strong> Modern,
-                responsive, and user-centric websites.
+                <strong>Website Design &amp; Development:</strong> Modern, responsive, and user-centric websites.
               </li>
               <li className="mb-2">
-                <strong>Website Hosting & Refreshes:</strong> Reliable hosting
-                with updates to keep your website cutting-edge.
+                <strong>Website Hosting &amp; Refreshes:</strong> Reliable hosting with updates to keep your website cutting-edge.
               </li>
               <li className="mb-2">
-                <strong>SEO & Marketing:</strong> Targeted strategies for
-                increased visibility and business growth.
+                <strong>SEO &amp; Marketing:</strong> Targeted strategies for increased visibility and business growth.
               </li>
             </ul>
-
             <p className="text-blue-700 mb-6">
               Contact us at{" "}
               <a
@@ -67,8 +66,10 @@ export default function Home() {
                 (619) 791-8817
               </a>
             </p>
-
-            <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-md">
+            <Button
+              onClick={handleSignIn}
+              className="bg-blue-600 hover:bg-blue-700 text-white rounded-md shadow-md"
+            >
               Get Started
             </Button>
           </CardContent>
