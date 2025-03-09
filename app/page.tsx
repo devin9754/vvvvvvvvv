@@ -12,6 +12,20 @@ export default function Home() {
 
   return (
     <main className="flex min-h-screen flex-col items-center justify-center p-6 bg-blue-50 text-center">
+      {/* Video at the top */}
+      <motion.video
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 0.5, duration: 1.5 }}
+        src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
+        className="w-full max-w-4xl rounded-xl shadow-2xl mb-10"
+        autoPlay
+        loop
+        muted
+        playsInline
+      />
+
+      {/* Card section below the video */}
       <motion.div
         initial={{ y: -30, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
@@ -38,22 +52,29 @@ export default function Home() {
             {/* Centered bullet list */}
             <ul className="list-disc list-inside text-blue-700 mb-6 inline-block">
               <li className="mb-2">
-                <strong>SaaS Solutions:</strong> Customized software tailored for unique business requirements.
+                <strong>SaaS Solutions:</strong> Customized software tailored for
+                unique business requirements.
               </li>
               <li className="mb-2">
-                <strong>Website Design &amp; Development:</strong> Modern, responsive, and user-centric websites.
+                <strong>Website Design &amp; Development:</strong> Modern,
+                responsive, and user-centric websites.
               </li>
               <li className="mb-2">
-                <strong>Website Hosting &amp; Refreshes:</strong> Reliable hosting with updates to keep your website cutting-edge.
+                <strong>Website Hosting &amp; Refreshes:</strong> Reliable hosting
+                with updates to keep your website cutting-edge.
               </li>
               <li className="mb-2">
-                <strong>SEO &amp; Marketing:</strong> Targeted strategies for increased visibility and business growth.
+                <strong>SEO &amp; Marketing:</strong> Targeted strategies for
+                increased visibility and business growth.
               </li>
             </ul>
 
             <p className="text-blue-700 mb-6">
               Contact us at{" "}
-              <a href="mailto:devin@digimodels.us" className="underline text-blue-800">
+              <a
+                href="mailto:devin@digimodels.us"
+                className="underline text-blue-800"
+              >
                 devin@digimodels.us
               </a>{" "}
               or call{" "}
@@ -71,18 +92,6 @@ export default function Home() {
           </CardContent>
         </Card>
       </motion.div>
-
-      <motion.video
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1, duration: 1.5 }}
-        src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
-        className="mt-10 w-full max-w-4xl rounded-xl shadow-2xl"
-        autoPlay
-        loop
-        muted
-        playsInline
-      />
     </main>
   );
 }
