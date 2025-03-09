@@ -5,9 +5,14 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
+  // Replace this URL with your final Cognito domain, client ID, and callback path
   const handleSignIn = () => {
     window.location.href =
-      "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com/login?client_id=46a9rm6mfce87enhsjk507mn9r&response_type=code&scope=email+openid+phone&redirect_uri=https%3A%2F%2Fdigimodels.store%2Fapi%2Fauth%2Fcallback";
+      "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com/login" +
+      "?client_id=46a9rm6mfce87enhsjk507mn9r" +
+      "&response_type=code" +
+      "&scope=email+openid+phone" +
+      "&redirect_uri=https%3A%2F%2Fdigimodels.store%2Fapi%2Fauth%2Fcallback";
   };
 
   return (
