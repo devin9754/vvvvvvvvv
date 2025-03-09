@@ -52,22 +52,29 @@ export default function Home() {
             {/* Centered bullet list */}
             <ul className="list-disc list-inside text-blue-700 mb-6 inline-block">
               <li className="mb-2">
-                <strong>SaaS Solutions:</strong> Customized software tailored for unique business requirements.
+                <strong>SaaS Solutions:</strong> Customized software tailored for
+                unique business requirements.
               </li>
               <li className="mb-2">
-                <strong>Website Design &amp; Development:</strong> Modern, responsive, and user-centric websites.
+                <strong>Website Design &amp; Development:</strong> Modern,
+                responsive, and user-centric websites.
               </li>
               <li className="mb-2">
-                <strong>Website Hosting &amp; Refreshes:</strong> Reliable hosting with updates to keep your website cutting-edge.
+                <strong>Website Hosting &amp; Refreshes:</strong> Reliable hosting
+                with updates to keep your website cutting-edge.
               </li>
               <li className="mb-2">
-                <strong>SEO &amp; Marketing:</strong> Targeted strategies for increased visibility and business growth.
+                <strong>SEO &amp; Marketing:</strong> Targeted strategies for
+                increased visibility and business growth.
               </li>
             </ul>
 
             <p className="text-blue-700 mb-6">
               Contact us at{" "}
-              <a href="mailto:devin@digimodels.us" className="underline text-blue-800">
+              <a
+                href="mailto:devin@digimodels.us"
+                className="underline text-blue-800"
+              >
                 devin@digimodels.us
               </a>{" "}
               or call{" "}
