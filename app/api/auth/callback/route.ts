@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { Buffer } from "buffer"; // Explicit import for environments where Buffer isn't auto-available
 
 // Replace these constants with your actual Cognito configuration:
 const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
@@ -24,7 +25,7 @@ export async function GET(request: Request) {
   params.append("code", code);
   params.append("redirect_uri", REDIRECT_URI);
 
-  // Create the Basic Auth header if your client uses a secret
+  // Basic Auth header if your client uses a secret
   const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
 
   try {
@@ -46,8 +47,8 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
-    // Create a redirect response to your success page (or dashboard)
-    const response = NextResponse.redirect(new URL("/success", request.url));
+    // Force an absolute redirect to https://digimodels.store/success
+    const response = NextResponse.redirect("https://digimodels.store/success");
 
     // Set a secure, HttpOnly cookie with the access token
     response.cookies.set("access_token", accessToken || "", {
@@ -61,6 +62,9 @@ export async function GET(request: Request) {
     return response;
   } catch (error) {
     console.error("Error exchanging code for tokens:", error);
-    return NextResponse.json({ error: "Failed to exchange code for tokens" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to exchange code for tokens" },
+      { status: 500 }
+    );
   }
 }
