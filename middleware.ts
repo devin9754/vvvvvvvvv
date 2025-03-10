@@ -1,23 +1,24 @@
-// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  // Only run for routes starting with /dashboard
-  if (req.nextUrl.pathname.startsWith("/dashboard")) {
-    // Get the access token cookie (adjust the name if you used a different one)
+  // List the protected routes
+  const protectedPaths = ["/success", "/dashboard"];
+
+  // Check if the request path starts with any protected route
+  if (protectedPaths.some((path) => req.nextUrl.pathname.startsWith(path))) {
+    // Read the "access_token" cookie
     const token = req.cookies.get("access_token");
-    
-    // If there's no token, redirect the user to the home page (or login page)
+    // If no token, redirect to the home page (or your login page)
     if (!token) {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
-  // If token exists or route doesn't require protection, allow request
+
   return NextResponse.next();
 }
 
-// Configure the middleware to run on any route under /dashboard
+// Configure the middleware to run on the protected routes
 export const config = {
-  matcher: ["/dashboard/:path*"],
+  matcher: ["/success/:path*", "/dashboard/:path*"],
 };
