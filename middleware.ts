@@ -2,23 +2,24 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  // List the protected routes
-  const protectedPaths = ["/success", "/dashboard"];
+  // Define protected paths: both /dashboard and /success should be protected.
+  const protectedPaths = ["/dashboard", "/success"];
 
-  // Check if the request path starts with any protected route
+  // If the current path starts with one of the protected paths, check for the access token.
   if (protectedPaths.some((path) => req.nextUrl.pathname.startsWith(path))) {
-    // Read the "access_token" cookie
     const token = req.cookies.get("access_token");
-    // If no token, redirect to the home page (or your login page)
+
+    // If the token doesn't exist, redirect to the home page.
     if (!token) {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
 
+  // Otherwise, allow the request to proceed.
   return NextResponse.next();
 }
 
-// Configure the middleware to run on the protected routes
+// Run this middleware on any route under /dashboard and /success.
 export const config = {
-  matcher: ["/success/:path*", "/dashboard/:path*"],
+  matcher: ["/dashboard/:path*", "/success/:path*"],
 };
