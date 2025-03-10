@@ -1,67 +1,78 @@
-import { NextResponse } from "next/server";
-import { Buffer } from "buffer"; // Explicitly import Buffer
+"use client";
 
-// Replace these constants with your actual Cognito configuration:
-const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
-const CLIENT_ID = "46a9rm6mfce87enhsjk507mn9r";
-const CLIENT_SECRET = "3ciqhcjh2i1292iblbj7mjc7c00bk078gv9rq97p3umm2129r65";
-const REDIRECT_URI = "https://digimodels.store/api/auth/callback";
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const code = url.searchParams.get("code");
+export default function SuccessPage() {
+  const router = useRouter();
 
-  if (!code) {
-    return NextResponse.json({ error: "Missing code parameter" }, { status: 400 });
-  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.push("/dashboard");
+    }, 1000); // reduced delay to 1 second
 
-  // Construct the token endpoint URL
-  const tokenEndpoint = `${COGNITO_DOMAIN}/oauth2/token`;
+    return () => clearTimeout(timer);
+  }, [router]);
 
-  // Prepare URL-encoded body for the token exchange request
-  const params = new URLSearchParams();
-  params.append("grant_type", "authorization_code");
-  params.append("client_id", CLIENT_ID);
-  params.append("code", code);
-  params.append("redirect_uri", REDIRECT_URI);
+  return (
+    <main className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md text-center">
+        {/* Success Icon */}
+        <svg
+          className="w-16 h-16 mx-auto mb-4 text-green-500"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path
+            fillRule="evenodd"
+            d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
 
-  // Create the Basic Auth header using Buffer from 'buffer'
-  const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
+        <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+          Success!
+        </h1>
+        <p className="text-gray-600 mb-4">
+          You have successfully signed in with AWS Cognito.
+        </p>
+        <p className="text-gray-600">
+          Redirecting you to your dashboard...
+        </p>
 
-  try {
-    const tokenResponse = await fetch(tokenEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${basicAuth}`,
-      },
-      body: params.toString(),
-    });
+        {/* Optional: Simple spinner */}
+        <div className="mt-4">
+          <svg
+            className="animate-spin h-5 w-5 mx-auto text-blue-600"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+            aria-label="Loading..."
+          >
+            <circle
+              className="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              strokeWidth="4"
+            ></circle>
+            <path
+              className="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"
+            ></path>
+          </svg>
+        </div>
 
-    if (!tokenResponse.ok) {
-      const errorText = await tokenResponse.text();
-      console.error("Token response error:", errorText);
-      return NextResponse.json({ error: "Failed to exchange code for tokens" }, { status: 500 });
-    }
-
-    const tokenSet = await tokenResponse.json();
-    const accessToken = tokenSet.access_token;
-
-    // Force a redirect to your production success page
-    const response = NextResponse.redirect("https://digimodels.store/success");
-
-    // Set an HttpOnly, secure cookie with the access token
-    response.cookies.set("access_token", accessToken || "", {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-    });
-
-    return response;
-  } catch (error) {
-    console.error("Error exchanging code for tokens:", error);
-    return NextResponse.json({ error: "Failed to exchange code for tokens" }, { status: 500 });
-  }
+        <a
+          href="/dashboard"
+          className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+        >
+          Click here if you are not redirected automatically.
+        </a>
+      </div>
+    </main>
+  );
 }
