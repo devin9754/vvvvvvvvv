@@ -1,32 +1,45 @@
 "use client";
 
-import { motion } from "framer-motion";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+// If you want the fade-in animation, ensure you've installed framer-motion:
+// npm install framer-motion
+import { motion } from "framer-motion";
 
 export default function Dashboard() {
   const router = useRouter();
 
-  // A helper function to clear the "access_token" cookie and redirect to home.
+  // Client-side check: if there's no "access_token" in document.cookie, redirect to home.
+  useEffect(() => {
+    if (!document.cookie.includes("access_token=")) {
+      router.push("/");
+    }
+  }, [router]);
+
+  // A helper function to handle logout by clearing the cookie
   const handleLogout = () => {
-    // Expire the access_token cookie immediately
+    // Expire the access_token cookie
     document.cookie = "access_token=; path=/; max-age=0;";
-    // Redirect user to home
     router.push("/");
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col">
+    <motion.main
+      // A simple fade/slide in animation for the entire dashboard
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="min-h-screen w-full bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100 flex flex-col"
+    >
       {/* Top Navigation */}
       <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
         <h1 className="text-lg font-bold text-gray-700">DigiModels Dashboard</h1>
-        <div>
-          <button
-            onClick={handleLogout}
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-          >
-            Log Out
-          </button>
-        </div>
+        <button
+          onClick={handleLogout}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Log Out
+        </button>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
@@ -61,16 +74,12 @@ export default function Dashboard() {
         </aside>
 
         {/* Main Content */}
-        <motion.main
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8 }}
-          className="flex-1 overflow-y-auto p-6"
-        >
+        <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-5xl mx-auto space-y-6">
-            {/* Heading */}
             <div>
-              <h2 className="text-3xl font-bold text-gray-900">Welcome to Your Dashboard</h2>
+              <h2 className="text-3xl font-bold text-gray-900">
+                Welcome to Your Dashboard
+              </h2>
               <p className="text-gray-600 mt-1">
                 This content is protected. Explore your recent activity and exclusive content below.
               </p>
@@ -121,7 +130,6 @@ export default function Dashboard() {
               <p className="text-gray-600 mb-4">
                 Watch our new AWS S3 hosted video:
               </p>
-              {/* 16:9 Container */}
               <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-lg shadow-lg">
                 <video
                   className="absolute top-0 left-0 w-full h-full object-cover"
@@ -135,8 +143,8 @@ export default function Dashboard() {
               </div>
             </div>
           </div>
-        </motion.main>
+        </div>
       </div>
-    </div>
+    </motion.main>
   );
 }

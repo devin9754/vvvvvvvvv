@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  // If the request is exactly /dashboard or starts with /dashboard/
+  // If the request path is exactly /dashboard or starts with /dashboard/
   if (
     req.nextUrl.pathname === "/dashboard" ||
     req.nextUrl.pathname.startsWith("/dashboard/")
@@ -13,9 +13,11 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
+  // Otherwise, allow the request to proceed
   return NextResponse.next();
 }
 
 export const config = {
+  // We match the exact /dashboard route and any subpaths under /dashboard
   matcher: ["/dashboard", "/dashboard/:path*"],
 };
