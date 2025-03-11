@@ -1,22 +1,17 @@
-"use client";
-
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
-
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default function SuccessPage() {
-  const router = useRouter();
+  // Read cookies on the server side.
+  const cookieStore = cookies();
+  const token = cookieStore.get("access_token");
 
-  useEffect(() => {
-    // Redirect to /dashboard after 1 second
-    const timer = setTimeout(() => {
-      router.push("/dashboard");
-    }, 1000);
-    return () => clearTimeout(timer);
-  }, [router]);
+  // If there's no access token, redirect to the home page.
+  if (!token) {
+    redirect("/");
+  }
 
+  // If the token exists, render the success page.
   return (
     <main className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-md text-center">
@@ -36,13 +31,9 @@ export default function SuccessPage() {
         <p className="text-gray-600 mb-4">
           You have successfully signed in with AWS Cognito.
         </p>
-        <p className="text-gray-600">Redirecting you to your dashboard...</p>
-        <a
-          href="/dashboard"
-          className="mt-4 inline-block text-sm text-blue-600 hover:underline"
-        >
-          Click here if you are not redirected automatically.
-        </a>
+        <p className="text-gray-600">
+          Redirecting you to your dashboard...
+        </p>
       </div>
     </main>
   );
