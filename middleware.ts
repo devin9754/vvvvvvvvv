@@ -1,23 +1,27 @@
+// middleware.ts
 import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  // If the request path is exactly /dashboard or starts with /dashboard/
+  // Define the protected paths
+  const protectedPaths = ["/dashboard", "/success"];
+
+  // Check if the current request path is exactly one of the protected routes
+  // or starts with one of them plus a "/"
   if (
-    req.nextUrl.pathname === "/dashboard" ||
-    req.nextUrl.pathname.startsWith("/dashboard/")
+    protectedPaths.some(
+      (path) =>
+        req.nextUrl.pathname === path || req.nextUrl.pathname.startsWith(path + "/")
+    )
   ) {
     const token = req.cookies.get("access_token");
-    // If no token, redirect to home
     if (!token) {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
-  // Otherwise, allow the request to proceed
   return NextResponse.next();
 }
 
 export const config = {
-  // We match the exact /dashboard route and any subpaths under /dashboard
-  matcher: ["/dashboard", "/dashboard/:path*"],
+  matcher: ["/dashboard", "/dashboard/:path*", "/success", "/success/:path*"],
 };

@@ -1,31 +1,20 @@
 "use client";
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
-// If you want the fade-in animation, ensure you've installed framer-motion:
-// npm install framer-motion
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
   const router = useRouter();
 
-  // Client-side check: if there's no "access_token" in document.cookie, redirect to home.
-  useEffect(() => {
-    if (!document.cookie.includes("access_token=")) {
-      router.push("/");
-    }
-  }, [router]);
-
-  // A helper function to handle logout by clearing the cookie
+  // Optional: you can have a logout button here if needed
   const handleLogout = () => {
-    // Expire the access_token cookie
+    // Remove the access_token cookie (note: since it's HttpOnly, this may need to be handled via an API route)
     document.cookie = "access_token=; path=/; max-age=0;";
     router.push("/");
   };
 
   return (
     <motion.main
-      // A simple fade/slide in animation for the entire dashboard
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
@@ -46,28 +35,16 @@ export default function Dashboard() {
         {/* Optional Sidebar */}
         <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-4">
           <nav className="flex flex-col space-y-2">
-            <a
-              href="#"
-              className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium"
-            >
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Overview
             </a>
-            <a
-              href="#"
-              className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium"
-            >
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Recent Activity
             </a>
-            <a
-              href="#"
-              className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium"
-            >
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Quick Links
             </a>
-            <a
-              href="#"
-              className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium"
-            >
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Settings
             </a>
           </nav>
