@@ -17,7 +17,7 @@ export function middleware(req: NextRequest) {
   return NextResponse.next();
 }
 
-// Ensure the middleware runs on any route under /dashboard and /success.
+// Updated matcher to cover the exact /success route as well.
 export const config = {
-  matcher: ["/dashboard/:path*", "/success/:path*"],
+  matcher: ["/dashboard/:path*", "/success", "/success/:path*"],
 };
