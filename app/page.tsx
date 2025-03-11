@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
-  // Replace this URL with your final Cognito domain, client ID, and callback path
   const handleSignIn = () => {
     window.location.href =
       "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com/login" +
@@ -54,7 +53,6 @@ export default function Home() {
               elevate your digital presence.
             </p>
 
-            {/* Centered bullet list */}
             <ul className="list-disc list-inside text-blue-700 mb-6 inline-block">
               <li className="mb-2">
                 <strong>SaaS Solutions:</strong> Customized software tailored for

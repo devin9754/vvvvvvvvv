@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { Buffer } from "buffer"; // Explicit import for environments where Buffer isn't auto-available
+import { Buffer } from "buffer";
 
-// Replace these constants with your actual Cognito configuration:
+// Your Cognito configuration
 const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "46a9rm6mfce87enhsjk507mn9r";
 const CLIENT_SECRET = "3ciqhcjh2i1292iblbj7mjc7c00bk078gv9rq97p3umm2129r65";
@@ -15,17 +15,17 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing code parameter" }, { status: 400 });
   }
 
-  // Construct the token endpoint URL
+  // Construct token endpoint URL
   const tokenEndpoint = `${COGNITO_DOMAIN}/oauth2/token`;
 
-  // Prepare URL-encoded body for the token exchange request
+  // Prepare URL-encoded body
   const params = new URLSearchParams();
   params.append("grant_type", "authorization_code");
   params.append("client_id", CLIENT_ID);
   params.append("code", code);
   params.append("redirect_uri", REDIRECT_URI);
 
-  // Basic Auth header if your client uses a secret
+  // Build the Basic Auth header
   const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
 
   try {
@@ -47,7 +47,7 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
-    // Force an absolute redirect to https://digimodels.store/success
+    // Force an absolute redirect to the production success page
     const response = NextResponse.redirect("https://digimodels.store/success");
 
     // Set a secure, HttpOnly cookie with the access token
@@ -62,9 +62,6 @@ export async function GET(request: Request) {
     return response;
   } catch (error) {
     console.error("Error exchanging code for tokens:", error);
-    return NextResponse.json(
-      { error: "Failed to exchange code for tokens" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to exchange code for tokens" }, { status: 500 });
   }
 }
