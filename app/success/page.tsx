@@ -1,8 +1,7 @@
 "use client";
 
-// Force dynamic rendering so that middleware runs on every request
+// Force dynamic rendering so middleware runs on every request
 export const dynamic = "force-dynamic";
-export const revalidate = 0;
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
@@ -11,10 +10,9 @@ export default function SuccessPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Redirect to /dashboard after 1 second
     const timer = setTimeout(() => {
       router.push("/dashboard");
-    }, 1000);
+    }, 1000); // 1 second delay
 
     return () => clearTimeout(timer);
   }, [router]);
