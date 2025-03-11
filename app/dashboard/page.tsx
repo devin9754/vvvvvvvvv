@@ -6,10 +6,9 @@ import { useRouter } from "next/navigation";
 export default function Dashboard() {
   const router = useRouter();
 
-  // Optional: Logout function to clear cookie and redirect to home.
+  // Optional: a logout function. If the cookie is HttpOnly, you might need an API route to clear it properly.
   const handleLogout = () => {
-    // Clear the access_token cookie (Note: This client-side method works if the cookie isn't HttpOnly;
-    // if it is HttpOnly, you might need to call an API route to clear it.)
+    // Expire the cookie client-side (if not truly HttpOnly) or call an API route to do so.
     document.cookie = "access_token=; path=/; max-age=0;";
     router.push("/");
   };
@@ -21,7 +20,6 @@ export default function Dashboard() {
       transition={{ duration: 0.8 }}
       className="min-h-screen w-full bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100 flex flex-col"
     >
-      {/* Top Navigation */}
       <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
         <h1 className="text-lg font-bold text-gray-700">DigiModels Dashboard</h1>
         <button
@@ -33,9 +31,9 @@ export default function Dashboard() {
       </header>
 
       <div className="flex flex-1 overflow-hidden">
-        {/* Optional Sidebar */}
         <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-4">
           <nav className="flex flex-col space-y-2">
+            {/* Sidebar links */}
             <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Overview
             </a>
@@ -51,7 +49,6 @@ export default function Dashboard() {
           </nav>
         </aside>
 
-        {/* Main Content */}
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-5xl mx-auto space-y-6">
             <div>
@@ -65,7 +62,6 @@ export default function Dashboard() {
 
             {/* Cards Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Recent Activity */}
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   Recent Activity
@@ -74,8 +70,6 @@ export default function Dashboard() {
                   Keep track of your latest actions and progress here.
                 </p>
               </div>
-
-              {/* Quick Links */}
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   Quick Links
