@@ -1,20 +1,26 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+"use client";
+
+// Force dynamic rendering so middleware runs on every request
+export const dynamic = "force-dynamic";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SuccessPage() {
-  // Read cookies on the server side.
-  const cookieStore = cookies();
-  const token = cookieStore.get("access_token");
+  const router = useRouter();
 
-  // If there's no access token, redirect to the home page.
-  if (!token) {
-    redirect("/");
-  }
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.push("/dashboard");
+    }, 1000); // 1 second delay
 
-  // If the token exists, render the success page.
+    return () => clearTimeout(timer);
+  }, [router]);
+
   return (
     <main className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-md text-center">
+        {/* Success Icon */}
         <svg
           className="w-16 h-16 mx-auto mb-4 text-green-500"
           fill="currentColor"
@@ -27,13 +33,23 @@ export default function SuccessPage() {
             clipRule="evenodd"
           />
         </svg>
-        <h1 className="text-2xl font-semibold text-gray-800 mb-2">Success!</h1>
+
+        <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+          Success!
+        </h1>
         <p className="text-gray-600 mb-4">
           You have successfully signed in with AWS Cognito.
         </p>
         <p className="text-gray-600">
           Redirecting you to your dashboard...
         </p>
+
+        <a
+          href="/dashboard"
+          className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+        >
+          Click here if you are not redirected automatically.
+        </a>
       </div>
     </main>
   );
