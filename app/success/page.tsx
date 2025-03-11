@@ -1,70 +1,56 @@
-import { NextResponse } from "next/server";
-import { Buffer } from "buffer"; // Explicit import for environments where Buffer isn't auto-available
+"use client";
 
-// Replace these constants with your actual Cognito configuration:
-const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
-const CLIENT_ID = "46a9rm6mfce87enhsjk507mn9r";
-const CLIENT_SECRET = "3ciqhcjh2i1292iblbj7mjc7c00bk078gv9rq97p3umm2129r65";
-const REDIRECT_URI = "https://digimodels.store/api/auth/callback";
+// Force dynamic rendering so middleware runs on every request
+export const dynamic = "force-dynamic";
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const code = url.searchParams.get("code");
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
-  if (!code) {
-    return NextResponse.json({ error: "Missing code parameter" }, { status: 400 });
-  }
+export default function SuccessPage() {
+  const router = useRouter();
 
-  // Construct the token endpoint URL
-  const tokenEndpoint = `${COGNITO_DOMAIN}/oauth2/token`;
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      router.push("/dashboard");
+    }, 1000); // 1 second delay
 
-  // Prepare URL-encoded body for the token exchange request
-  const params = new URLSearchParams();
-  params.append("grant_type", "authorization_code");
-  params.append("client_id", CLIENT_ID);
-  params.append("code", code);
-  params.append("redirect_uri", REDIRECT_URI);
+    return () => clearTimeout(timer);
+  }, [router]);
 
-  // Basic Auth header if your client uses a secret
-  const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
+  return (
+    <main className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
+      <div className="bg-white shadow-lg rounded-lg p-8 max-w-md text-center">
+        {/* Success Icon */}
+        <svg
+          className="w-16 h-16 mx-auto mb-4 text-green-500"
+          fill="currentColor"
+          viewBox="0 0 20 20"
+          aria-hidden="true"
+        >
+          <path
+            fillRule="evenodd"
+            d="M16.707 5.293a1 1 0 00-1.414 0L8 12.586 4.707 9.293a1 1 0 10-1.414 1.414l4 4a1 1 0 001.414 0l8-8a1 1 0 000-1.414z"
+            clipRule="evenodd"
+          />
+        </svg>
 
-  try {
-    const tokenResponse = await fetch(tokenEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${basicAuth}`,
-      },
-      body: params.toString(),
-    });
+        <h1 className="text-2xl font-semibold text-gray-800 mb-2">
+          Success!
+        </h1>
+        <p className="text-gray-600 mb-4">
+          You have successfully signed in with AWS Cognito.
+        </p>
+        <p className="text-gray-600">
+          Redirecting you to your dashboard...
+        </p>
 
-    if (!tokenResponse.ok) {
-      const errorText = await tokenResponse.text();
-      console.error("Token response error:", errorText);
-      return NextResponse.json({ error: "Failed to exchange code for tokens" }, { status: 500 });
-    }
-
-    const tokenSet = await tokenResponse.json();
-    const accessToken = tokenSet.access_token;
-
-    // Force an absolute redirect to https://digimodels.store/success
-    const response = NextResponse.redirect("https://digimodels.store/success");
-
-    // Set a secure, HttpOnly cookie with the access token
-    response.cookies.set("access_token", accessToken || "", {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-    });
-
-    return response;
-  } catch (error) {
-    console.error("Error exchanging code for tokens:", error);
-    return NextResponse.json(
-      { error: "Failed to exchange code for tokens" },
-      { status: 500 }
-    );
-  }
+        <a
+          href="/dashboard"
+          className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+        >
+          Click here if you are not redirected automatically.
+        </a>
+      </div>
+    </main>
+  );
 }
