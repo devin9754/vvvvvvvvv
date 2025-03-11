@@ -2,14 +2,13 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  const protectedPaths = ["/dashboard", "/success"];
+  // If the request is exactly /dashboard or starts with /dashboard/
   if (
-    protectedPaths.some(
-      (path) =>
-        req.nextUrl.pathname === path || req.nextUrl.pathname.startsWith(path + "/")
-    )
+    req.nextUrl.pathname === "/dashboard" ||
+    req.nextUrl.pathname.startsWith("/dashboard/")
   ) {
     const token = req.cookies.get("access_token");
+    // If no token, redirect to home
     if (!token) {
       return NextResponse.redirect(new URL("/", req.url));
     }
@@ -18,5 +17,5 @@ export function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*", "/success", "/success/:path*"],
+  matcher: ["/dashboard", "/dashboard/:path*"],
 };
