@@ -1,26 +1,29 @@
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function Dashboard() {
+  const router = useRouter();
+
+  // A helper function to clear the "access_token" cookie and redirect to home.
+  const handleLogout = () => {
+    // Expire the access_token cookie immediately
+    document.cookie = "access_token=; path=/; max-age=0;";
+    // Redirect user to home
+    router.push("/");
+  };
+
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 flex flex-col">
       {/* Top Navigation */}
       <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          {/* Logo or Title */}
-          <img
-            src="https://upload.wikimedia.org/wikipedia/commons/7/79/Amazon_Web_Services_Logo.svg"
-            alt="Logo"
-            className="w-8 h-8"
-          />
-          <h1 className="text-lg font-bold text-gray-700">
-            DigiModels Dashboard
-          </h1>
-        </div>
+        <h1 className="text-lg font-bold text-gray-700">DigiModels Dashboard</h1>
         <div>
-          {/* Possibly add a user menu or logout button */}
-          <button className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+          <button
+            onClick={handleLogout}
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          >
             Log Out
           </button>
         </div>
@@ -90,7 +93,7 @@ export default function Dashboard() {
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   Quick Links
                 </h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-1">
+                <ul className="list-disc list-inside text-gray-600 space-y-1 mt-2">
                   <li>
                     <a href="#" className="text-blue-600 hover:underline">
                       Manage Profile
