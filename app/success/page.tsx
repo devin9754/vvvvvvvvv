@@ -1,17 +1,20 @@
-import { cookies } from "next/headers";
-import { redirect } from "next/navigation";
+"use client";
+
+import { useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function SuccessPage() {
-  // Read cookies on the server side.
-  const cookieStore = cookies();
-  const token = cookieStore.get("access_token");
+  const router = useRouter();
 
-  // If there's no access token, redirect to the home page.
-  if (!token) {
-    redirect("/");
-  }
+  useEffect(() => {
+    // Automatically redirect to /dashboard after 1 second
+    const timer = setTimeout(() => {
+      router.push("/dashboard");
+    }, 1000);
 
-  // If the token exists, render the success page.
+    return () => clearTimeout(timer);
+  }, [router]);
+
   return (
     <main className="flex items-center justify-center min-h-screen bg-gray-50 px-4">
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-md text-center">
@@ -28,12 +31,14 @@ export default function SuccessPage() {
           />
         </svg>
         <h1 className="text-2xl font-semibold text-gray-800 mb-2">Success!</h1>
-        <p className="text-gray-600 mb-4">
-          You have successfully signed in with AWS Cognito.
-        </p>
-        <p className="text-gray-600">
-          Redirecting you to your dashboard...
-        </p>
+        <p className="text-gray-600 mb-4">You have successfully signed in with AWS Cognito.</p>
+        <p className="text-gray-600">Redirecting you to your dashboard...</p>
+        <a
+          href="/dashboard"
+          className="mt-4 inline-block text-sm text-blue-600 hover:underline"
+        >
+          Click here if you are not redirected automatically.
+        </a>
       </div>
     </main>
   );
