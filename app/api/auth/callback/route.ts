@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
-import { Buffer } from "buffer"; // Explicitly import Buffer
+import { Buffer } from "buffer";
 
-// Replace these constants with your actual Cognito configuration:
 const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "46a9rm6mfce87enhsjk507mn9r";
 const CLIENT_SECRET = "3ciqhcjh2i1292iblbj7mjc7c00bk078gv9rq97p3umm2129r65";
@@ -15,17 +14,14 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing code parameter" }, { status: 400 });
   }
 
-  // Construct the token endpoint URL
   const tokenEndpoint = `${COGNITO_DOMAIN}/oauth2/token`;
 
-  // Prepare URL-encoded body for the token exchange request
   const params = new URLSearchParams();
   params.append("grant_type", "authorization_code");
   params.append("client_id", CLIENT_ID);
   params.append("code", code);
   params.append("redirect_uri", REDIRECT_URI);
 
-  // Create the Basic Auth header using Buffer
   const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
 
   try {
@@ -47,10 +43,9 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
-    // Force an absolute redirect to your success page
-    const response = NextResponse.redirect("https://digimodels.store/success");
+    // Redirect directly to the dashboard
+    const response = NextResponse.redirect("https://digimodels.store/dashboard");
 
-    // Set a secure, HttpOnly cookie with the access token
     response.cookies.set("access_token", accessToken || "", {
       path: "/",
       httpOnly: true,
