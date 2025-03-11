@@ -6,9 +6,10 @@ import { useRouter } from "next/navigation";
 export default function Dashboard() {
   const router = useRouter();
 
-  // Optional: you can have a logout button here if needed
+  // Optional: Logout function to clear cookie and redirect to home.
   const handleLogout = () => {
-    // Remove the access_token cookie (note: since it's HttpOnly, this may need to be handled via an API route)
+    // Clear the access_token cookie (Note: This client-side method works if the cookie isn't HttpOnly;
+    // if it is HttpOnly, you might need to call an API route to clear it.)
     document.cookie = "access_token=; path=/; max-age=0;";
     router.push("/");
   };

@@ -43,10 +43,9 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
-    // Redirect directly to /dashboard
+    // Redirect directly to the dashboard
     const response = NextResponse.redirect("https://digimodels.store/dashboard");
 
-    // Set a secure, HttpOnly cookie with the access token
     response.cookies.set("access_token", accessToken || "", {
       path: "/",
       httpOnly: true,
