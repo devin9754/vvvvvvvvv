@@ -1,53 +1,38 @@
-"use client";
-
-import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
+// app/dashboard/page.tsx
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
 export default function Dashboard() {
-  const router = useRouter();
+  // Get the cookies from the request
+  const cookieStore = cookies();
+  const token = cookieStore.get("access_token");
+  if (!token?.value) {
+    // If no access_token, redirect to home
+    redirect("/");
+  }
 
-  // Optional: Logout function to clear cookie and redirect to home.
-  const handleLogout = () => {
-    // Clear the access_token cookie (Note: This client-side method works if the cookie isn't HttpOnly;
-    // if it is HttpOnly, you might need to call an API route to clear it.)
-    document.cookie = "access_token=; path=/; max-age=0;";
-    router.push("/");
-  };
-
+  // If token exists, render the dashboard content
   return (
-    <motion.main
-      initial={{ opacity: 0, y: 10 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.8 }}
-      className="min-h-screen w-full bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100 flex flex-col"
-    >
+    <main className="min-h-screen w-full bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100 flex flex-col">
       {/* Top Navigation */}
       <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
         <h1 className="text-lg font-bold text-gray-700">DigiModels Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Log Out
-        </button>
+        {/* Logout Form to clear HttpOnly cookie via API route */}
+        <form action="/api/auth/logout" method="POST">
+          <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition">
+            Log Out
+          </button>
+        </form>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
         {/* Optional Sidebar */}
         <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-4">
           <nav className="flex flex-col space-y-2">
-            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Overview
-            </a>
-            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Recent Activity
-            </a>
-            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Quick Links
-            </a>
-            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Settings
-            </a>
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">Overview</a>
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">Recent Activity</a>
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">Quick Links</a>
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">Settings</a>
           </nav>
         </aside>
 
@@ -65,7 +50,7 @@ export default function Dashboard() {
 
             {/* Cards Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              {/* Recent Activity */}
+              {/* Recent Activity Card */}
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   Recent Activity
@@ -75,24 +60,24 @@ export default function Dashboard() {
                 </p>
               </div>
 
-              {/* Quick Links */}
+              {/* Quick Links Card */}
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">
                   Quick Links
                 </h3>
                 <ul className="list-disc list-inside text-gray-600 space-y-1 mt-2">
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/profile" className="text-blue-600 hover:underline">
                       Manage Profile
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/reports" className="text-blue-600 hover:underline">
                       View Reports
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/api/auth/logout" className="text-blue-600 hover:underline">
                       Log Out
                     </a>
                   </li>
@@ -123,6 +108,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </motion.main>
+    </main>
   );
 }

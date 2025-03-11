@@ -1,3 +1,4 @@
+// app/api/auth/callback/route.ts
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
@@ -15,7 +16,6 @@ export async function GET(request: Request) {
   }
 
   const tokenEndpoint = `${COGNITO_DOMAIN}/oauth2/token`;
-
   const params = new URLSearchParams();
   params.append("grant_type", "authorization_code");
   params.append("client_id", CLIENT_ID);
@@ -43,7 +43,6 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
-    // Redirect directly to the dashboard
     const response = NextResponse.redirect("https://digimodels.store/dashboard");
 
     response.cookies.set("access_token", accessToken || "", {
