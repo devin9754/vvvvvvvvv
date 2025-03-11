@@ -1,20 +1,24 @@
-"use client";
-
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 
-export default function Dashboard() {
-  const router = useRouter();
+// Make the component async if your Next.js version returns a Promise from cookies()
+export default async function Dashboard() {
+  // Some Next.js versions require awaiting cookies():
+  const cookieStore = await cookies(); 
+  // If your version doesn't require `await`, you can remove it:
+  // const cookieStore = cookies();
 
-  // Optional: a logout function. If the cookie is HttpOnly, you might need an API route to clear it properly.
-  const handleLogout = () => {
-    // Expire the cookie client-side (if not truly HttpOnly) or call an API route to do so.
-    document.cookie = "access_token=; path=/; max-age=0;";
-    router.push("/");
-  };
+  // Safely get the access_token value
+  const token = cookieStore.get("access_token")?.value;
+  if (!token) {
+    // If no token, redirect to home (server-side)
+    redirect("/");
+  }
 
   return (
-    <motion.main
+    <motion.div
+      // Instead of motion.main, we use motion.div to avoid type errors
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
@@ -22,18 +26,19 @@ export default function Dashboard() {
     >
       <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
         <h1 className="text-lg font-bold text-gray-700">DigiModels Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Log Out
-        </button>
+        <form action="/api/auth/logout" method="POST">
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          >
+            Log Out
+          </button>
+        </form>
       </header>
 
       <div className="flex flex-1 overflow-hidden">
         <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-4">
           <nav className="flex flex-col space-y-2">
-            {/* Sidebar links */}
             <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Overview
             </a>
@@ -52,9 +57,7 @@ export default function Dashboard() {
         <div className="flex-1 overflow-y-auto p-6">
           <div className="max-w-5xl mx-auto space-y-6">
             <div>
-              <h2 className="text-3xl font-bold text-gray-900">
-                Welcome to Your Dashboard
-              </h2>
+              <h2 className="text-3xl font-bold text-gray-900">Welcome to Your Dashboard</h2>
               <p className="text-gray-600 mt-1">
                 This content is protected. Explore your recent activity and exclusive content below.
               </p>
@@ -76,17 +79,17 @@ export default function Dashboard() {
                 </h3>
                 <ul className="list-disc list-inside text-gray-600 space-y-1 mt-2">
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/profile" className="text-blue-600 hover:underline">
                       Manage Profile
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/reports" className="text-blue-600 hover:underline">
                       View Reports
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/api/auth/logout" className="text-blue-600 hover:underline">
                       Log Out
                     </a>
                   </li>
@@ -99,9 +102,7 @@ export default function Dashboard() {
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 Exclusive Video
               </h3>
-              <p className="text-gray-600 mb-4">
-                Watch our new AWS S3 hosted video:
-              </p>
+              <p className="text-gray-600 mb-4">Watch our new AWS S3 hosted video:</p>
               <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-lg shadow-lg">
                 <video
                   className="absolute top-0 left-0 w-full h-full object-cover"
@@ -117,6 +118,6 @@ export default function Dashboard() {
           </div>
         </div>
       </div>
-    </motion.main>
+    </motion.div>
   );
 }
