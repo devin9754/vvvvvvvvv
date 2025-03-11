@@ -1,7 +1,9 @@
 "use client";
 
-// Force dynamic rendering so middleware runs on every request
+// Force the page to render dynamically (not statically cached)
 export const dynamic = "force-dynamic";
+// Disable revalidation so that the page is always fresh
+export const revalidate = 0;
 
 import { useEffect } from "react";
 import { useRouter } from "next/navigation";
