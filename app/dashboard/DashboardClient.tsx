@@ -1,28 +1,8 @@
-// app/dashboard/DashboardClient.tsx
 "use client";
 
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 
 export default function DashboardClient() {
-  const router = useRouter();
-
-  // Optionally, you can also implement a fetch-based logout handler,
-  // but here we use a form for reliability.
-  const handleLogout = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await fetch("/api/auth/logout", { method: "POST" });
-      if (!res.ok) {
-        console.error("Logout failed:", res.statusText);
-      } else {
-        router.push("/");
-      }
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -33,7 +13,7 @@ export default function DashboardClient() {
       {/* Top Navigation with a logout form */}
       <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between shadow-sm">
         <h1 className="text-lg font-bold text-gray-700">DigiModels Dashboard</h1>
-        <form onSubmit={handleLogout}>
+        <form action="https://digimodels.store/api/auth/logout" method="POST">
           <button
             type="submit"
             className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
@@ -62,25 +42,23 @@ export default function DashboardClient() {
 
       {/* Main Content */}
       <div className="flex flex-1 overflow-hidden mt-4 px-4">
-        {/* Sidebar */}
         <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-4 mr-4 rounded-lg shadow-sm">
           <nav className="flex flex-col space-y-2">
-            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Overview
+            <a href="/profile" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+              Manage Profile
             </a>
-            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Recent Activity
+            <a href="/reports" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+              View Reports
             </a>
-            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Quick Links
-            </a>
-            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Settings
-            </a>
+            <li>
+              <form action="https://digimodels.store/api/auth/logout" method="POST">
+                <button type="submit" className="text-blue-600 hover:underline">
+                  Log Out
+                </button>
+              </form>
+            </li>
           </nav>
         </aside>
-
-        {/* Main Dashboard Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-5xl mx-auto space-y-6">
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
@@ -92,7 +70,6 @@ export default function DashboardClient() {
               </p>
             </div>
 
-            {/* Cards Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">Recent Activity</h3>
@@ -114,15 +91,16 @@ export default function DashboardClient() {
                     </a>
                   </li>
                   <li>
-                    <a href="/api/auth/logout" className="text-blue-600 hover:underline">
-                      Log Out
-                    </a>
+                    <form action="https://digimodels.store/api/auth/logout" method="POST">
+                      <button type="submit" className="text-blue-600 hover:underline">
+                        Log Out
+                      </button>
+                    </form>
                   </li>
                 </ul>
               </div>
             </div>
 
-            {/* Additional Content */}
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Additional Content</h3>
               <p className="text-gray-600">
