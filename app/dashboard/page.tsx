@@ -1,73 +1,121 @@
-// app/api/auth/callback/route.ts
+// app/dashboard/page.tsx
+"use client";
 
-import { NextResponse } from "next/server";
-import { Buffer } from "buffer";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
-// Replace these with your actual values
-const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
-const CLIENT_ID = "46a9rm6mfce87enhsjk507mn9r";
-const CLIENT_SECRET = "3ciqhcjh2i1292iblbj7mjc7c00bk078gv9rq97p3umm2129r65"; // Integrated as requested
-const REDIRECT_URI = "https://digimodels.store/api/auth/callback";
+export default function Dashboard() {
+  const router = useRouter();
 
-export async function GET(request: Request) {
-  const url = new URL(request.url);
-  const code = url.searchParams.get("code");
+  // Optional: client-side logout
+  const handleLogout = () => {
+    document.cookie = "access_token=; path=/; max-age=0;";
+    router.push("/");
+  };
 
-  if (!code) {
-    return NextResponse.json({ error: "Missing code parameter" }, { status: 400 });
-  }
+  return (
+    <motion.main
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.8 }}
+      className="min-h-screen w-full bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100 flex flex-col"
+    >
+      <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+        <h1 className="text-lg font-bold text-gray-700">DigiModels Dashboard</h1>
+        <button
+          onClick={handleLogout}
+          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+        >
+          Log Out
+        </button>
+      </header>
 
-  // Construct the token endpoint URL
-  const tokenEndpoint = `${COGNITO_DOMAIN}/oauth2/token`;
+      <div className="flex flex-1 overflow-hidden">
+        <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-4">
+          <nav className="flex flex-col space-y-2">
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+              Overview
+            </a>
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+              Recent Activity
+            </a>
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+              Quick Links
+            </a>
+            <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+              Settings
+            </a>
+          </nav>
+        </aside>
 
-  // Prepare URL-encoded body for the token exchange request
-  const params = new URLSearchParams();
-  params.append("grant_type", "authorization_code");
-  params.append("client_id", CLIENT_ID);
-  params.append("code", code);
-  params.append("redirect_uri", REDIRECT_URI);
+        <div className="flex-1 overflow-y-auto p-6">
+          <div className="max-w-5xl mx-auto space-y-6">
+            <div>
+              <h2 className="text-3xl font-bold text-gray-900">
+                Welcome to Your Dashboard
+              </h2>
+              <p className="text-gray-600 mt-1">
+                This content is protected. Explore your recent activity and exclusive content below.
+              </p>
+            </div>
 
-  // If your Cognito App Client requires a secret, do Basic Auth
-  const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
+            {/* Cards Row */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  Recent Activity
+                </h3>
+                <p className="text-gray-600">
+                  Keep track of your latest actions and progress here.
+                </p>
+              </div>
+              <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                  Quick Links
+                </h3>
+                <ul className="list-disc list-inside text-gray-600 space-y-1 mt-2">
+                  <li>
+                    <a href="#" className="text-blue-600 hover:underline">
+                      Manage Profile
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="text-blue-600 hover:underline">
+                      View Reports
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" className="text-blue-600 hover:underline">
+                      Log Out
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
 
-  try {
-    const tokenResponse = await fetch(tokenEndpoint, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${basicAuth}`, // Must match your secret exactly
-      },
-      body: params.toString(),
-    });
-
-    if (!tokenResponse.ok) {
-      const errorText = await tokenResponse.text();
-      console.error("Token response error:", errorText);
-      return NextResponse.json({ error: "Failed to exchange code for tokens" }, { status: 500 });
-    }
-
-    // Parse the JSON response to get the tokens
-    const tokenSet = await tokenResponse.json();
-    const accessToken = tokenSet.access_token;
-
-    // Create a response that redirects to /dashboard
-    const response = NextResponse.redirect("https://digimodels.store/dashboard");
-
-    // Set a secure, HttpOnly cookie with the access token
-    response.cookies.set("access_token", accessToken || "", {
-      path: "/",
-      httpOnly: true,
-      secure: true,
-      sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7, // 7 days
-    });
-
-    return response;
-  } catch (error) {
-    console.error("Error exchanging code for tokens:", error);
-    return NextResponse.json(
-      { error: "Failed to exchange code for tokens" },
-      { status: 500 }
-    );
-  }
+            {/* Optional Video Section */}
+            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Exclusive Video
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Watch our new AWS S3 hosted video:
+              </p>
+              <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-lg shadow-lg">
+                <video
+                  className="absolute top-0 left-0 w-full h-full object-cover"
+                  controls
+                  autoPlay
+                  muted
+                  loop
+                  playsInline
+                  src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_260385849.mp4"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </motion.main>
+  );
 }
