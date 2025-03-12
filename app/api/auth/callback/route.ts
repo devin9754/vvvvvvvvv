@@ -1,3 +1,4 @@
+// app/api/auth/callback/route.ts
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
@@ -42,10 +43,8 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
-    // Redirect to /dashboard
     const response = NextResponse.redirect("https://digimodels.store/dashboard");
 
-    // Set a secure, HttpOnly cookie with the access token
     response.cookies.set("access_token", accessToken || "", {
       path: "/",
       httpOnly: true,
