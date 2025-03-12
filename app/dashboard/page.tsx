@@ -7,7 +7,7 @@ import { useRouter } from "next/navigation";
 export default function Dashboard() {
   const router = useRouter();
 
-  // Optional: client-side logout
+  // Optional logout functionality:
   const handleLogout = () => {
     document.cookie = "access_token=; path=/; max-age=0;";
     router.push("/");
@@ -75,17 +75,17 @@ export default function Dashboard() {
                 </h3>
                 <ul className="list-disc list-inside text-gray-600 space-y-1 mt-2">
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/profile" className="text-blue-600 hover:underline">
                       Manage Profile
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/reports" className="text-blue-600 hover:underline">
                       View Reports
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/api/auth/logout" className="text-blue-600 hover:underline">
                       Log Out
                     </a>
                   </li>
@@ -93,7 +93,7 @@ export default function Dashboard() {
               </div>
             </div>
 
-            {/* Optional Video Section */}
+            {/* Exclusive Video Section */}
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 Exclusive Video

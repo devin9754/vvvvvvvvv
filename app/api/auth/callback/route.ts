@@ -1,12 +1,10 @@
 // app/api/auth/callback/route.ts
-
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
-// Replace these with your actual values
 const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "46a9rm6mfce87enhsjk507mn9r";
-const CLIENT_SECRET = "3ciqhcjh2i1292iblbj7mjc7c00bk078gv9rq97p3umm2129r65"; // Integrated as requested
+const CLIENT_SECRET = "3ciqhcjh2i1292iblbj7mjc7c00bk078gv9rq97p3umm2129r65";
 const REDIRECT_URI = "https://digimodels.store/api/auth/callback";
 
 export async function GET(request: Request) {
@@ -17,17 +15,13 @@ export async function GET(request: Request) {
     return NextResponse.json({ error: "Missing code parameter" }, { status: 400 });
   }
 
-  // Construct the token endpoint URL
   const tokenEndpoint = `${COGNITO_DOMAIN}/oauth2/token`;
-
-  // Prepare URL-encoded body for the token exchange request
   const params = new URLSearchParams();
   params.append("grant_type", "authorization_code");
   params.append("client_id", CLIENT_ID);
   params.append("code", code);
   params.append("redirect_uri", REDIRECT_URI);
 
-  // If your Cognito App Client requires a secret, do Basic Auth
   const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
 
   try {
@@ -35,7 +29,7 @@ export async function GET(request: Request) {
       method: "POST",
       headers: {
         "Content-Type": "application/x-www-form-urlencoded",
-        Authorization: `Basic ${basicAuth}`, // Must match your secret exactly
+        Authorization: `Basic ${basicAuth}`,
       },
       body: params.toString(),
     });
@@ -46,11 +40,9 @@ export async function GET(request: Request) {
       return NextResponse.json({ error: "Failed to exchange code for tokens" }, { status: 500 });
     }
 
-    // Parse the JSON response to get the tokens
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
-    // Create a response that redirects to /dashboard
     const response = NextResponse.redirect("https://digimodels.store/dashboard");
 
     // Set a secure, HttpOnly cookie with the access token
@@ -65,9 +57,6 @@ export async function GET(request: Request) {
     return response;
   } catch (error) {
     console.error("Error exchanging code for tokens:", error);
-    return NextResponse.json(
-      { error: "Failed to exchange code for tokens" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to exchange code for tokens" }, { status: 500 });
   }
 }

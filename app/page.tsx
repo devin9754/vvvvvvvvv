@@ -1,3 +1,4 @@
+// app/page.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -6,7 +7,6 @@ import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   const handleSignIn = () => {
-    // Replace with your actual Cognito domain, client ID, etc.
     window.location.href =
       "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com/login" +
       "?client_id=46a9rm6mfce87enhsjk507mn9r" +
@@ -52,7 +52,8 @@ export default function Home() {
             </p>
             <ul className="list-disc list-inside text-blue-700 mb-6 inline-block">
               <li className="mb-2">
-                <strong>SaaS Solutions:</strong> Customized software tailored for unique business requirements.
+                <strong>SaaS Solutions:</strong> Customized software tailored for
+                unique business requirements.
               </li>
               <li className="mb-2">
                 <strong>Website Design &amp; Development:</strong> Modern, responsive, and user-centric websites.
