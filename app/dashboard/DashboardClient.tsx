@@ -10,6 +10,7 @@ export default function DashboardClient() {
   const handleLogout = async () => {
     try {
       console.log("Attempting to log out...");
+      // Call the logout route with POST
       const res = await fetch("/api/auth/logout", { method: "POST" });
       if (!res.ok) {
         console.error("Logout failed:", res.statusText);
@@ -110,9 +111,11 @@ export default function DashboardClient() {
                     </a>
                   </li>
                   <li>
+                    {/* This link triggers a GET to logout (if you want GET) */}
                     <a href="/api/auth/logout" className="text-blue-600 hover:underline">
                       Log Out
                     </a>
+                    {/* If you prefer POST only, use a form or remove this link */}
                   </li>
                 </ul>
               </div>

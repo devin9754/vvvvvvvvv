@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
+// Replace with your actual Cognito details
 const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "46a9rm6mfce87enhsjk507mn9r";
 const CLIENT_SECRET = "3ciqhcjh2i1292iblbj7mjc7c00bk078gv9rq97p3umm2129r65";
@@ -16,6 +17,7 @@ export async function GET(request: Request) {
   }
 
   const tokenEndpoint = `${COGNITO_DOMAIN}/oauth2/token`;
+
   const params = new URLSearchParams();
   params.append("grant_type", "authorization_code");
   params.append("client_id", CLIENT_ID);
@@ -57,6 +59,9 @@ export async function GET(request: Request) {
     return response;
   } catch (error) {
     console.error("Error exchanging code for tokens:", error);
-    return NextResponse.json({ error: "Failed to exchange code for tokens" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Failed to exchange code for tokens" },
+      { status: 500 }
+    );
   }
 }
