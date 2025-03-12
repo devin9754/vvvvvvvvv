@@ -7,10 +7,19 @@ import { useRouter } from "next/navigation";
 export default function DashboardClient() {
   const router = useRouter();
 
-  // Logout: calls the logout API route, then pushes home
   const handleLogout = async () => {
-    await fetch("/api/auth/logout", { method: "POST" });
-    router.push("/");
+    try {
+      console.log("Attempting to log out...");
+      const res = await fetch("/api/auth/logout", { method: "POST" });
+      if (!res.ok) {
+        console.error("Logout failed:", res.statusText);
+      } else {
+        console.log("Logout successful, redirecting to home.");
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
   };
 
   return (
@@ -34,7 +43,6 @@ export default function DashboardClient() {
       {/* Hero Video Section */}
       <section className="w-full bg-white py-4 shadow-sm">
         <div className="relative w-full max-w-5xl mx-auto px-4">
-          {/* 16:9 aspect ratio */}
           <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-lg shadow-lg">
             <video
               className="absolute top-0 left-0 w-full h-full object-cover"
@@ -72,8 +80,10 @@ export default function DashboardClient() {
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-5xl mx-auto space-y-6">
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Your Dashboard</h2>
-              <p className="text-gray-600">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                Welcome to Your Dashboard
+              </h2>
+              <p className="text-gray-600 mt-1">
                 This content is protected. Explore your recent activity and exclusive content below.
               </p>
             </div>
@@ -90,17 +100,17 @@ export default function DashboardClient() {
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">Quick Links</h3>
                 <ul className="list-disc list-inside text-gray-600 space-y-1 mt-2">
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/profile" className="text-blue-600 hover:underline">
                       Manage Profile
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/reports" className="text-blue-600 hover:underline">
                       View Reports
                     </a>
                   </li>
                   <li>
-                    <a href="#" className="text-blue-600 hover:underline">
+                    <a href="/api/auth/logout" className="text-blue-600 hover:underline">
                       Log Out
                     </a>
                   </li>
@@ -108,7 +118,7 @@ export default function DashboardClient() {
               </div>
             </div>
 
-            {/* Additional Section */}
+            {/* Additional Content */}
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Additional Content</h3>
               <p className="text-gray-600">
