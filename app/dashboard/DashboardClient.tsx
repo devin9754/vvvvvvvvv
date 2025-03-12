@@ -1,3 +1,4 @@
+// app/dashboard/DashboardClient.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -6,8 +7,9 @@ import { useRouter } from "next/navigation";
 export default function DashboardClient() {
   const router = useRouter();
 
-  const handleLogout = () => {
-    document.cookie = "access_token=; path=/; max-age=0;";
+  // Logout: calls the logout API route, then pushes home
+  const handleLogout = async () => {
+    await fetch("/api/auth/logout", { method: "POST" });
     router.push("/");
   };
 
@@ -32,7 +34,7 @@ export default function DashboardClient() {
       {/* Hero Video Section */}
       <section className="w-full bg-white py-4 shadow-sm">
         <div className="relative w-full max-w-5xl mx-auto px-4">
-          {/* Maintain 16:9 aspect ratio */}
+          {/* 16:9 aspect ratio */}
           <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-lg shadow-lg">
             <video
               className="absolute top-0 left-0 w-full h-full object-cover"
@@ -48,7 +50,7 @@ export default function DashboardClient() {
       </section>
 
       <div className="flex flex-1 overflow-hidden mt-4 px-4">
-        {/* Sidebar (hidden on small screens) */}
+        {/* Sidebar */}
         <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-4 mr-4 rounded-lg shadow-sm">
           <nav className="flex flex-col space-y-2">
             <a href="#" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
@@ -80,7 +82,9 @@ export default function DashboardClient() {
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">Recent Activity</h3>
-                <p className="text-gray-600">Keep track of your latest actions and progress here.</p>
+                <p className="text-gray-600">
+                  Keep track of your latest actions and progress here.
+                </p>
               </div>
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">Quick Links</h3>
