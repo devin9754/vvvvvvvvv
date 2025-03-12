@@ -1,10 +1,9 @@
-// app/api/auth/callback/route.ts
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
 const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "46a9rm6mfce87enhsjk507mn9r";
-const CLIENT_SECRET = "3ciqhcjh2i1292iblbj7mjc7c00bk078gv9rq97p3umm2129r65";
+const CLIENT_SECRET = "YOUR_CLIENT_SECRET";
 const REDIRECT_URI = "https://digimodels.store/api/auth/callback";
 
 export async function GET(request: Request) {
@@ -43,8 +42,10 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
+    // Create a response that redirects to the dashboard.
     const response = NextResponse.redirect("https://digimodels.store/dashboard");
 
+    // Set the cookie with the access token.
     response.cookies.set("access_token", accessToken || "", {
       path: "/",
       httpOnly: true,
