@@ -7,15 +7,15 @@ import { useRouter } from "next/navigation";
 export default function DashboardClient() {
   const router = useRouter();
 
-  const handleLogout = async () => {
+  // Optionally, you can also implement a fetch-based logout handler,
+  // but here we use a form for reliability.
+  const handleLogout = async (e: React.FormEvent) => {
+    e.preventDefault();
     try {
-      console.log("Attempting to log out...");
-      // Call the logout route with POST
       const res = await fetch("/api/auth/logout", { method: "POST" });
       if (!res.ok) {
         console.error("Logout failed:", res.statusText);
       } else {
-        console.log("Logout successful, redirecting to home.");
         router.push("/");
       }
     } catch (error) {
@@ -30,15 +30,17 @@ export default function DashboardClient() {
       transition={{ duration: 0.8 }}
       className="min-h-screen w-full bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100 flex flex-col"
     >
-      {/* Top Navigation */}
+      {/* Top Navigation with a logout form */}
       <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between shadow-sm">
         <h1 className="text-lg font-bold text-gray-700">DigiModels Dashboard</h1>
-        <button
-          onClick={handleLogout}
-          className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
-        >
-          Log Out
-        </button>
+        <form onSubmit={handleLogout}>
+          <button
+            type="submit"
+            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+          >
+            Log Out
+          </button>
+        </form>
       </header>
 
       {/* Hero Video Section */}
@@ -58,6 +60,7 @@ export default function DashboardClient() {
         </div>
       </section>
 
+      {/* Main Content */}
       <div className="flex flex-1 overflow-hidden mt-4 px-4">
         {/* Sidebar */}
         <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-4 mr-4 rounded-lg shadow-sm">
@@ -77,7 +80,7 @@ export default function DashboardClient() {
           </nav>
         </aside>
 
-        {/* Main Content */}
+        {/* Main Dashboard Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-5xl mx-auto space-y-6">
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
@@ -111,11 +114,9 @@ export default function DashboardClient() {
                     </a>
                   </li>
                   <li>
-                    {/* This link triggers a GET to logout (if you want GET) */}
                     <a href="/api/auth/logout" className="text-blue-600 hover:underline">
                       Log Out
                     </a>
-                    {/* If you prefer POST only, use a form or remove this link */}
                   </li>
                 </ul>
               </div>
