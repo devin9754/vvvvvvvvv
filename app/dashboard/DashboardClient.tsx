@@ -1,22 +1,41 @@
+// app/dashboard/DashboardClient.tsx
 "use client";
 
 import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function DashboardClient() {
+  const router = useRouter();
+
+  // Handle logout via a form submission
+  const handleLogout = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const res = await fetch("https://digimodels.store/api/auth/logout", { method: "POST" });
+      if (!res.ok) {
+        console.error("Logout failed:", res.statusText);
+      } else {
+        router.push("/");
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className="min-h-screen w-full bg-gradient-to-br from-indigo-50 via-blue-50 to-blue-100 flex flex-col"
+      className="min-h-screen w-full bg-gradient-to-br from-slate-50 via-blue-50 to-indigo-50 flex flex-col"
     >
-      {/* Top Navigation with a logout form */}
-      <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between shadow-sm">
-        <h1 className="text-lg font-bold text-gray-700">DigiModels Dashboard</h1>
-        <form action="https://digimodels.store/api/auth/logout" method="POST">
+      {/* Top Navigation */}
+      <header className="bg-white shadow-sm border-b border-gray-200 p-4 flex items-center justify-between">
+        <h1 className="text-xl font-bold text-gray-800">DigiModels Dashboard</h1>
+        <form onSubmit={handleLogout}>
           <button
             type="submit"
-            className="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700 transition"
+            className="bg-red-600 text-white px-4 py-2 rounded hover:bg-red-700 transition"
           >
             Log Out
           </button>
@@ -40,25 +59,29 @@ export default function DashboardClient() {
         </div>
       </section>
 
-      {/* Main Content */}
       <div className="flex flex-1 overflow-hidden mt-4 px-4">
+        {/* Sidebar */}
         <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-4 mr-4 rounded-lg shadow-sm">
           <nav className="flex flex-col space-y-2">
-            <a href="/profile" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Manage Profile
+            <a href="/dashboard/overview" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-800 font-medium">
+              Overview
             </a>
-            <a href="/reports" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              View Reports
+            <a href="/dashboard/recent-activity" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-800 font-medium">
+              Recent Activity
             </a>
-            <li>
-              <form action="https://digimodels.store/api/auth/logout" method="POST">
-                <button type="submit" className="text-blue-600 hover:underline">
-                  Log Out
-                </button>
-              </form>
-            </li>
+            <a href="/dashboard/courses" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-800 font-medium">
+              Courses
+            </a>
+            <a href="/dashboard/settings" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-800 font-medium">
+              Settings
+            </a>
+            <a href="/dashboard/announcements" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-800 font-medium">
+              Announcements
+            </a>
           </nav>
         </aside>
+
+        {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-5xl mx-auto space-y-6">
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
@@ -66,46 +89,41 @@ export default function DashboardClient() {
                 Welcome to Your Dashboard
               </h2>
               <p className="text-gray-600 mt-1">
-                This content is protected. Explore your recent activity and exclusive content below.
+                Explore your recent activity, enroll in courses, and manage your account.
               </p>
             </div>
 
+            {/* Cards Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">Recent Activity</h3>
                 <p className="text-gray-600">
-                  Keep track of your latest actions and progress here.
+                  Check out your latest progress and actions.
                 </p>
+                <a href="/dashboard/recent-activity" className="text-blue-600 hover:underline mt-2 inline-block">
+                  View Details
+                </a>
               </div>
               <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
-                <h3 className="text-xl font-semibold text-gray-800 mb-2">Quick Links</h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-1 mt-2">
-                  <li>
-                    <a href="/profile" className="text-blue-600 hover:underline">
-                      Manage Profile
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/reports" className="text-blue-600 hover:underline">
-                      View Reports
-                    </a>
-                  </li>
-                  <li>
-                    <form action="https://digimodels.store/api/auth/logout" method="POST">
-                      <button type="submit" className="text-blue-600 hover:underline">
-                        Log Out
-                      </button>
-                    </form>
-                  </li>
-                </ul>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">Available Courses</h3>
+                <p className="text-gray-600">
+                  Browse and enroll in courses to boost your skills.
+                </p>
+                <a href="/dashboard/courses" className="text-blue-600 hover:underline mt-2 inline-block">
+                  Explore Courses
+                </a>
               </div>
             </div>
 
+            {/* Additional Section */}
             <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Additional Content</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Member Announcements</h3>
               <p className="text-gray-600">
-                Add more widgets or course content here as you expand the app.
+                Stay informed with the latest updates and training sessions.
               </p>
+              <a href="/dashboard/announcements" className="text-blue-600 hover:underline mt-2 inline-block">
+                Read More
+              </a>
             </div>
           </div>
         </div>
