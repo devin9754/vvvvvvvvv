@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
+// Replace with your actual values
 const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "46a9rm6mfce87enhsjk507mn9r";
 const CLIENT_SECRET = "YOUR_CLIENT_SECRET";
@@ -42,10 +43,8 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
-    // Create a response that redirects to the dashboard.
     const response = NextResponse.redirect("https://digimodels.store/dashboard");
 
-    // Set the cookie with the access token.
     response.cookies.set("access_token", accessToken || "", {
       path: "/",
       httpOnly: true,
