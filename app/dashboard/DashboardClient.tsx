@@ -1,26 +1,10 @@
+// app/dashboard/DashboardClient.tsx
 "use client";
 
 import { motion } from "framer-motion";
-import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function DashboardClient() {
-  const router = useRouter();
-
-  const handleLogout = async (e: React.FormEvent) => {
-    e.preventDefault();
-    try {
-      const res = await fetch("https://digimodels.store/api/auth/logout", { method: "POST" });
-      if (!res.ok) {
-        console.error("Logout failed:", res.statusText);
-      } else {
-        router.push("/");
-      }
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -28,12 +12,13 @@ export default function DashboardClient() {
       transition={{ duration: 0.8 }}
       className="min-h-screen w-full bg-gradient-to-br from-gray-50 via-blue-50 to-indigo-100 flex flex-col"
     >
-      {/* Top Navigation */}
+      {/* Top Navigation with a logout form */}
       <header className="bg-white shadow-md border-b border-gray-200 p-4 flex items-center justify-between">
         <h1 className="text-xl font-bold text-indigo-700 tracking-wide">
           DigiModels Dashboard
         </h1>
-        <form onSubmit={handleLogout}>
+        {/* Form-based logout => POST to /api/auth/logout */}
+        <form action="https://digimodels.store/api/auth/logout" method="POST">
           <button
             type="submit"
             className="bg-gradient-to-r from-pink-500 to-fuchsia-600 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
@@ -148,19 +133,6 @@ export default function DashboardClient() {
                     >
                       View Reports
                     </a>
-                  </li>
-                  <li>
-                    <form
-                      action="https://digimodels.store/api/auth/logout"
-                      method="POST"
-                    >
-                      <button
-                        type="submit"
-                        className="text-blue-600 hover:underline"
-                      >
-                        Log Out
-                      </button>
-                    </form>
                   </li>
                 </ul>
               </div>
