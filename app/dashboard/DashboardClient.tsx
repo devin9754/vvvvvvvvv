@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
-// Pastel gradient array for dynamic background
+// Array of pastel gradient classes for a dynamic background
 const PASTEL_GRADIENTS = [
   "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100",
   "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100",
@@ -17,7 +17,7 @@ const PASTEL_GRADIENTS = [
 export default function DashboardClient() {
   const [gradientIndex, setGradientIndex] = useState(0);
 
-  // On mount, pick a random gradient from the array
+  // On mount, pick a random pastel gradient
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * PASTEL_GRADIENTS.length);
     setGradientIndex(randomIndex);
@@ -26,23 +26,6 @@ export default function DashboardClient() {
   // Cycle to the next gradient in the array
   const handleSwitchGradient = () => {
     setGradientIndex((prev) => (prev + 1) % PASTEL_GRADIENTS.length);
-  };
-
-  // Logout: POST to your logout route, then full reload
-  const handleLogout = async () => {
-    try {
-      const res = await fetch("https://digimodels.store/api/auth/logout", {
-        method: "POST",
-      });
-      if (!res.ok) {
-        console.error("Logout failed:", res.statusText);
-      } else {
-        // Force immediate redirect away from the dashboard
-        window.location.assign("https://digimodels.store/");
-      }
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
   };
 
   return (
@@ -64,12 +47,15 @@ export default function DashboardClient() {
           >
             Switch Theme
           </button>
-          <button
-            onClick={handleLogout}
-            className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
-          >
-            Log Out
-          </button>
+          {/* Form-based logout => POST to your logout route */}
+          <form action="https://digimodels.store/api/auth/logout" method="POST">
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
+            >
+              Log Out
+            </button>
+          </form>
         </div>
       </header>
 
@@ -84,7 +70,8 @@ export default function DashboardClient() {
               muted
               loop
               playsInline
-              src="https://digimodels-members.s3.us-west-1.amazonaws.com/EPD_Short_Reels_03.mp4"
+              // Replace this with a public video or a short-lived signed URL
+              src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
             />
           </div>
         </div>
