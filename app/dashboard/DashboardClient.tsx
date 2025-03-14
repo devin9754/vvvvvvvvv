@@ -3,7 +3,6 @@
 
 import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import PayPalButton from "./PayPalButton";
 
 // Array of pastel gradient classes for a dynamic background
@@ -16,7 +15,6 @@ const PASTEL_GRADIENTS = [
 ];
 
 export default function DashboardClient() {
-  const router = useRouter();
   const [gradientIndex, setGradientIndex] = useState(0);
 
   // On mount, pick a random pastel gradient
@@ -30,7 +28,7 @@ export default function DashboardClient() {
     setGradientIndex((prev) => (prev + 1) % PASTEL_GRADIENTS.length);
   };
 
-  // Updated logout handler: after the API call, force a full reload via window.location.assign
+  // Logout handler: POST to logout, then force full page reload
   const handleLogout = async () => {
     try {
       const res = await fetch("https://digimodels.store/api/auth/logout", {
@@ -39,7 +37,7 @@ export default function DashboardClient() {
       if (!res.ok) {
         console.error("Logout failed:", res.statusText);
       } else {
-        // Force a full reload so the logout takes immediate effect
+        // Force a full reload so logout is immediate
         window.location.assign("https://digimodels.store/");
       }
     } catch (error) {
@@ -112,19 +110,34 @@ export default function DashboardClient() {
             Navigation
           </h2>
           <nav className="flex flex-col space-y-3 text-gray-700">
-            <a href="/dashboard/overview" className="hover:text-purple-700 hover:font-semibold transition">
+            <a
+              href="/dashboard/overview"
+              className="hover:text-purple-700 hover:font-semibold transition"
+            >
               Overview
             </a>
-            <a href="/dashboard/recent-activity" className="hover:text-purple-700 hover:font-semibold transition">
+            <a
+              href="/dashboard/recent-activity"
+              className="hover:text-purple-700 hover:font-semibold transition"
+            >
               Recent Activity
             </a>
-            <a href="/dashboard/courses" className="hover:text-purple-700 hover:font-semibold transition">
+            <a
+              href="/dashboard/courses"
+              className="hover:text-purple-700 hover:font-semibold transition"
+            >
               Courses
             </a>
-            <a href="/dashboard/settings" className="hover:text-purple-700 hover:font-semibold transition">
+            <a
+              href="/dashboard/settings"
+              className="hover:text-purple-700 hover:font-semibold transition"
+            >
               Settings
             </a>
-            <a href="/dashboard/announcements" className="hover:text-purple-700 hover:font-semibold transition">
+            <a
+              href="/dashboard/announcements"
+              className="hover:text-purple-700 hover:font-semibold transition"
+            >
               Announcements
             </a>
           </nav>
@@ -151,7 +164,10 @@ export default function DashboardClient() {
                 <p className="text-gray-600">
                   Keep track of your latest actions and progress here.
                 </p>
-                <a href="/dashboard/recent-activity" className="mt-2 inline-block text-purple-600 hover:underline">
+                <a
+                  href="/dashboard/recent-activity"
+                  className="mt-2 inline-block text-purple-600 hover:underline"
+                >
                   View Details
                 </a>
               </div>
