@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
-// Array of pastel gradient classes for a dynamic background
+// Pastel gradient array for dynamic background
 const PASTEL_GRADIENTS = [
   "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100",
   "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100",
@@ -17,7 +17,7 @@ const PASTEL_GRADIENTS = [
 export default function DashboardClient() {
   const [gradientIndex, setGradientIndex] = useState(0);
 
-  // On mount, pick a random pastel gradient
+  // On mount, pick a random gradient from the array
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * PASTEL_GRADIENTS.length);
     setGradientIndex(randomIndex);
@@ -28,7 +28,7 @@ export default function DashboardClient() {
     setGradientIndex((prev) => (prev + 1) % PASTEL_GRADIENTS.length);
   };
 
-  // Logout handler: POST to logout, then force full page reload
+  // Logout: POST to your logout route, then full reload
   const handleLogout = async () => {
     try {
       const res = await fetch("https://digimodels.store/api/auth/logout", {
@@ -37,7 +37,7 @@ export default function DashboardClient() {
       if (!res.ok) {
         console.error("Logout failed:", res.statusText);
       } else {
-        // Force a full reload so logout is immediate
+        // Force immediate redirect away from the dashboard
         window.location.assign("https://digimodels.store/");
       }
     } catch (error) {
@@ -84,7 +84,7 @@ export default function DashboardClient() {
               muted
               loop
               playsInline
-              src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_260385849.mp4"
+              src="https://digimodels-members.s3.us-west-1.amazonaws.com/EPD_Short_Reels_03.mp4"
             />
           </div>
         </div>
