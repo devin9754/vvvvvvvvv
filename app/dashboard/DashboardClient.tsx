@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
-// Array of pastel gradient classes for a dynamic background
+// Pastel gradient array for a dynamic background
 const PASTEL_GRADIENTS = [
   "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100",
   "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100",
@@ -70,7 +70,8 @@ export default function DashboardClient() {
               muted
               loop
               playsInline
-              // Replace this with a public video or a short-lived signed URL
+              // Replace with your private or public S3 link. 
+              // If private, use a signed URL approach.
               src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
             />
           </div>
