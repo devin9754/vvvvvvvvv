@@ -5,27 +5,48 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
-// Pastel gradient array for a dynamic background
-const PASTEL_GRADIENTS = [
-  "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100",
-  "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100",
-  "bg-gradient-to-br from-lime-100 via-green-50 to-teal-100",
-  "bg-gradient-to-br from-fuchsia-100 via-pink-100 to-rose-100",
-  "bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-100",
+// Array of theme objects with a name and a Tailwind class
+const THEMES = [
+  {
+    name: "Pastel Pink",
+    class: "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100",
+  },
+  {
+    name: "Blue Neon",
+    class: "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100",
+  },
+  {
+    name: "Green Light",
+    class: "bg-gradient-to-br from-lime-100 via-green-50 to-teal-100",
+  },
+  {
+    name: "Fuchsia Mix",
+    class: "bg-gradient-to-br from-fuchsia-100 via-pink-100 to-rose-100",
+  },
+  {
+    name: "Yellow Orange",
+    class: "bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-100",
+  },
 ];
 
 export default function DashboardClient() {
-  const [gradientIndex, setGradientIndex] = useState(0);
+  // We'll store the currently selected theme index
+  const [themeIndex, setThemeIndex] = useState(0);
 
-  // On mount, pick a random pastel gradient
+  // On mount, pick a random theme
   useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * PASTEL_GRADIENTS.length);
-    setGradientIndex(randomIndex);
+    const randomIndex = Math.floor(Math.random() * THEMES.length);
+    setThemeIndex(randomIndex);
   }, []);
 
-  // Cycle to the next gradient in the array
-  const handleSwitchGradient = () => {
-    setGradientIndex((prev) => (prev + 1) % PASTEL_GRADIENTS.length);
+  // If user clicks "Switch Theme," just cycle to the next index
+  const handleSwitchTheme = () => {
+    setThemeIndex((prev) => (prev + 1) % THEMES.length);
+  };
+
+  // If user selects from the dropdown, set the theme directly
+  const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setThemeIndex(parseInt(e.target.value, 10));
   };
 
   return (
@@ -33,7 +54,8 @@ export default function DashboardClient() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      className={`${PASTEL_GRADIENTS[gradientIndex]} min-h-screen w-full flex flex-col transition-colors duration-500`}
+      // Use the selected theme's class for the background
+      className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col transition-colors duration-500`}
     >
       {/* Top Navigation */}
       <header className="bg-white shadow-md border-b border-gray-200 p-4 flex items-center justify-between">
@@ -41,8 +63,21 @@ export default function DashboardClient() {
           DigiModels Dashboard
         </h1>
         <div className="flex items-center gap-4">
+          {/* Dropdown for direct theme selection */}
+          <select
+            value={themeIndex}
+            onChange={handleThemeSelect}
+            className="border border-purple-300 rounded-md px-3 py-2 text-purple-700"
+          >
+            {THEMES.map((theme, idx) => (
+              <option key={idx} value={idx}>
+                {theme.name}
+              </option>
+            ))}
+          </select>
+          {/* Button to cycle theme */}
           <button
-            onClick={handleSwitchGradient}
+            onClick={handleSwitchTheme}
             className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
           >
             Switch Theme
@@ -70,8 +105,7 @@ export default function DashboardClient() {
               muted
               loop
               playsInline
-              // Replace with your private or public S3 link. 
-              // If private, use a signed URL approach.
+              // If this is private, replace with a signed URL. 
               src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
             />
           </div>
