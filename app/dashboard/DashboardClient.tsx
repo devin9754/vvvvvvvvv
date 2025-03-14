@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
-// Define an array of theme objects with a name and Tailwind CSS gradient classes
+// Define an array of theme objects
 const THEMES = [
   {
     name: "Pastel Pink",
@@ -38,14 +38,14 @@ export default function DashboardClient() {
     setThemeIndex(randomIndex);
   }, []);
 
+  // Cycle to the next theme
+  const handleSwitchTheme = () => {
+    setThemeIndex((prev) => (prev + 1) % THEMES.length);
+  };
+
   // If user selects from the dropdown
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
-  };
-
-  // (Optional) cycle theme button
-  const handleSwitchTheme = () => {
-    setThemeIndex((prev) => (prev + 1) % THEMES.length);
   };
 
   return (
@@ -53,36 +53,22 @@ export default function DashboardClient() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      // Use the selected theme's class for the entire background
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col transition-colors duration-500`}
     >
-      {/* Top Navigation (transparent) */}
+      {/* Top Navigation (no dropdown here) */}
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-purple-700 tracking-wide">
           DigiModels Dashboard
         </h1>
         <div className="flex items-center gap-4">
-          {/* Theme dropdown */}
-          <select
-            aria-label="Theme Selection"
-            value={themeIndex}
-            onChange={handleThemeSelect}
-            className="border border-purple-300 rounded-md px-3 py-2 text-purple-700"
-          >
-            {THEMES.map((theme, idx) => (
-              <option key={idx} value={idx}>
-                {theme.name}
-              </option>
-            ))}
-          </select>
-          {/* Switch theme button */}
+          {/* Optional button to cycle theme */}
           <button
             onClick={handleSwitchTheme}
             className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
           >
             Switch Theme
           </button>
-          {/* Logout form => POST */}
+          {/* Form-based logout => POST */}
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
@@ -94,7 +80,7 @@ export default function DashboardClient() {
         </div>
       </header>
 
-      {/* Hero Video Section (transparent) */}
+      {/* Hero Video Section */}
       <section className="py-4">
         <div className="relative w-full max-w-5xl mx-auto px-4">
           <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
@@ -105,14 +91,13 @@ export default function DashboardClient() {
               muted
               loop
               playsInline
-              // If private, use a signed URL approach
               src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
             />
           </div>
         </div>
       </section>
 
-      {/* Purchase Access Section (transparent) */}
+      {/* Purchase Access Section */}
       <section className="py-6">
         <div className="max-w-5xl mx-auto text-center space-y-4 backdrop-blur-sm">
           <h2 className="text-2xl font-bold text-purple-700">
@@ -126,7 +111,7 @@ export default function DashboardClient() {
       </section>
 
       <div className="flex flex-1 overflow-hidden mt-4 px-4">
-        {/* Sidebar (transparent) */}
+        {/* Sidebar */}
         <aside className="hidden md:flex flex-col w-64 border-r border-purple-300 p-4 mr-4 rounded-xl shadow-md backdrop-blur-sm">
           <h2 className="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">
             Navigation
@@ -165,7 +150,7 @@ export default function DashboardClient() {
           </nav>
         </aside>
 
-        {/* Main Content (transparent) */}
+        {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300">
@@ -220,6 +205,28 @@ export default function DashboardClient() {
               <p className="text-gray-600">
                 Add more widgets or course content here as you expand the app.
               </p>
+            </div>
+
+            {/* Theme Selection at the Bottom */}
+            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300 hover:shadow-lg transition">
+              <h3 className="text-xl font-semibold text-purple-800 mb-2">
+                Theme Selection
+              </h3>
+              <p className="text-gray-600 mb-2">
+                Pick your favorite pastel style:
+              </p>
+              <select
+                aria-label="Theme Selection"
+                value={themeIndex}
+                onChange={handleThemeSelect}
+                className="border border-purple-300 rounded-md px-3 py-2 text-purple-700"
+              >
+                {THEMES.map((theme, idx) => (
+                  <option key={idx} value={idx}>
+                    {theme.name}
+                  </option>
+                ))}
+              </select>
             </div>
           </div>
         </div>
