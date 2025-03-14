@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
-// Array of theme objects with a name and a Tailwind class
+// Define an array of theme objects with a name and Tailwind CSS gradient classes
 const THEMES = [
   {
     name: "Pastel Pink",
@@ -30,23 +30,22 @@ const THEMES = [
 ];
 
 export default function DashboardClient() {
-  // We'll store the currently selected theme index
   const [themeIndex, setThemeIndex] = useState(0);
 
-  // On mount, pick a random theme
+  // Pick a random theme on mount
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * THEMES.length);
     setThemeIndex(randomIndex);
   }, []);
 
-  // If user clicks "Switch Theme," just cycle to the next index
-  const handleSwitchTheme = () => {
-    setThemeIndex((prev) => (prev + 1) % THEMES.length);
-  };
-
-  // If user selects from the dropdown, set the theme directly
+  // If user selects from the dropdown
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
+  };
+
+  // (Optional) cycle theme button
+  const handleSwitchTheme = () => {
+    setThemeIndex((prev) => (prev + 1) % THEMES.length);
   };
 
   return (
@@ -54,17 +53,18 @@ export default function DashboardClient() {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
-      // Use the selected theme's class for the background
+      // Use the selected theme's class for the entire background
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col transition-colors duration-500`}
     >
-      {/* Top Navigation */}
-      <header className="bg-white shadow-md border-b border-gray-200 p-4 flex items-center justify-between">
+      {/* Top Navigation (transparent) */}
+      <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-purple-700 tracking-wide">
           DigiModels Dashboard
         </h1>
         <div className="flex items-center gap-4">
-          {/* Dropdown for direct theme selection */}
+          {/* Theme dropdown */}
           <select
+            aria-label="Theme Selection"
             value={themeIndex}
             onChange={handleThemeSelect}
             className="border border-purple-300 rounded-md px-3 py-2 text-purple-700"
@@ -75,14 +75,14 @@ export default function DashboardClient() {
               </option>
             ))}
           </select>
-          {/* Button to cycle theme */}
+          {/* Switch theme button */}
           <button
             onClick={handleSwitchTheme}
             className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
           >
             Switch Theme
           </button>
-          {/* Form-based logout => POST to your logout route */}
+          {/* Logout form => POST */}
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
@@ -94,10 +94,10 @@ export default function DashboardClient() {
         </div>
       </header>
 
-      {/* Hero Video Section */}
-      <section className="w-full bg-white py-4 shadow-sm">
+      {/* Hero Video Section (transparent) */}
+      <section className="py-4">
         <div className="relative w-full max-w-5xl mx-auto px-4">
-          <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-lg shadow-lg border border-purple-200/50">
+          <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
             <video
               className="absolute top-0 left-0 w-full h-full object-cover"
               controls
@@ -105,16 +105,16 @@ export default function DashboardClient() {
               muted
               loop
               playsInline
-              // If this is private, replace with a signed URL. 
+              // If private, use a signed URL approach
               src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
             />
           </div>
         </div>
       </section>
 
-      {/* Purchase Access Section */}
-      <section className="py-6 bg-white shadow-sm mt-4">
-        <div className="max-w-5xl mx-auto text-center space-y-4">
+      {/* Purchase Access Section (transparent) */}
+      <section className="py-6">
+        <div className="max-w-5xl mx-auto text-center space-y-4 backdrop-blur-sm">
           <h2 className="text-2xl font-bold text-purple-700">
             Purchase Access to Exclusive Videos
           </h2>
@@ -126,8 +126,8 @@ export default function DashboardClient() {
       </section>
 
       <div className="flex flex-1 overflow-hidden mt-4 px-4">
-        {/* Sidebar */}
-        <aside className="hidden md:flex flex-col w-64 bg-white border-r border-gray-200 p-4 mr-4 rounded-lg shadow-md">
+        {/* Sidebar (transparent) */}
+        <aside className="hidden md:flex flex-col w-64 border-r border-purple-300 p-4 mr-4 rounded-xl shadow-md backdrop-blur-sm">
           <h2 className="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">
             Navigation
           </h2>
@@ -165,10 +165,10 @@ export default function DashboardClient() {
           </nav>
         </aside>
 
-        {/* Main Content */}
+        {/* Main Content (transparent) */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5">
+            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300">
               <h2 className="text-3xl font-extrabold text-purple-700 mb-2">
                 Welcome to Your Dashboard
               </h2>
@@ -179,7 +179,7 @@ export default function DashboardClient() {
 
             {/* Cards Row */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5 hover:shadow-lg transition">
+              <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300 hover:shadow-lg transition">
                 <h3 className="text-xl font-semibold text-purple-800 mb-2">
                   Recent Activity
                 </h3>
@@ -193,7 +193,7 @@ export default function DashboardClient() {
                   View Details
                 </a>
               </div>
-              <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5 hover:shadow-lg transition">
+              <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300 hover:shadow-lg transition">
                 <h3 className="text-xl font-semibold text-purple-800 mb-2">
                   Quick Links
                 </h3>
@@ -213,7 +213,7 @@ export default function DashboardClient() {
             </div>
 
             {/* Additional Content Section */}
-            <div className="bg-white border border-gray-200 rounded-lg shadow-sm p-5 hover:shadow-lg transition">
+            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300 hover:shadow-lg transition">
               <h3 className="text-xl font-semibold text-purple-800 mb-2">
                 Additional Content
               </h3>
