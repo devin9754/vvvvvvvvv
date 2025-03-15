@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
-// Define an array of theme objects
 const THEMES = [
   {
     name: "Pastel Pink",
@@ -32,18 +31,15 @@ const THEMES = [
 export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
 
-  // Pick a random theme on mount
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * THEMES.length);
     setThemeIndex(randomIndex);
   }, []);
 
-  // Cycle to the next theme
   const handleSwitchTheme = () => {
     setThemeIndex((prev) => (prev + 1) % THEMES.length);
   };
 
-  // If user selects from the dropdown
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
   };
@@ -55,20 +51,18 @@ export default function DashboardClient() {
       transition={{ duration: 0.8 }}
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col transition-colors duration-500`}
     >
-      {/* Top Navigation (no dropdown here) */}
+      {/* Top Navigation */}
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-purple-700 tracking-wide">
           DigiModels Dashboard
         </h1>
         <div className="flex items-center gap-4">
-          {/* Optional button to cycle theme */}
           <button
             onClick={handleSwitchTheme}
             className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
           >
             Switch Theme
           </button>
-          {/* Form-based logout => POST */}
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
