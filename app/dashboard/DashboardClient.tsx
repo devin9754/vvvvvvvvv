@@ -49,13 +49,14 @@ export default function DashboardClient() {
   };
 
   return (
+    
     <motion.div
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.8 }}
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col transition-colors duration-500`}
     >
-      {/* Top Navigation */}
+      {/* Top Navigation (no dropdown here) */}
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-purple-700 tracking-wide">
           DigiModels Dashboard
