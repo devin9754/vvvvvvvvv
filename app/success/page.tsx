@@ -1,3 +1,4 @@
+// app/success/page.tsx
 "use client";
 
 import { useEffect, useState } from "react";
@@ -8,7 +9,6 @@ export default function SuccessPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Hypothetical call that adds the user to "PaidMember" group
     fetch("/api/paypal/confirm", { method: "POST" })
       .then((res) => res.json())
       .then((data) => {

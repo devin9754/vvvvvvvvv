@@ -51,6 +51,7 @@ export async function GET(request: NextRequest) {
     groupList = [groupAttr.Value];
   }
 
+  // Check for "PaidMembers" now, not "PaidMember"
   if (!groupList.includes("PaidMembers")) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
