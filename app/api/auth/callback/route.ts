@@ -1,10 +1,10 @@
-// app/api/auth/callback/route.ts
+// app/callback/route.ts
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
+// Use your actual domain, client ID, secret, and callback
 const COGNITO_DOMAIN = "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "4a8r52l7d5267hle2liar1nr6p";
-// Assuming a public client; if you have a secret, place it here:
 const CLIENT_SECRET = "1f1k65mo3jmakcmjabtf40kvna6f5s9o0pg5aguni34fb9s0a141";
 const REDIRECT_URI = "https://digimodels.store/callback";
 
@@ -43,6 +43,7 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
+    // After successful token exchange, store token in cookie and redirect
     const response = NextResponse.redirect("https://digimodels.store/dashboard");
     response.cookies.set("access_token", accessToken || "", {
       path: "/",
@@ -51,6 +52,7 @@ export async function GET(request: Request) {
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
+
     return response;
   } catch (error) {
     console.error("Error exchanging code for tokens:", error);

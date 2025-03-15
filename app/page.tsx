@@ -1,4 +1,3 @@
-// app/page.tsx
 "use client";
 
 import { useState, useEffect } from "react";
@@ -26,6 +25,8 @@ export default function Home() {
     setThemeIndex(parseInt(e.target.value, 10));
   };
 
+  // The new domain from your Cognito user pool's Hosted UI
+  // And the new app client ID, with callback /callback
   const handleSignIn = () => {
     window.location.href =
       "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com/login" +

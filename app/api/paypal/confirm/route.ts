@@ -11,7 +11,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
 });
 
 // Replace with your actual user pool
-const USER_POOL_ID = "us-east-1_13qoo9QXx";
+const USER_POOL_ID = "us-east-1_LE1OnaNPP";
 const GROUP_NAME = "PaidMember";
 
 export async function POST(request: Request) {
