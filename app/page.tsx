@@ -5,6 +5,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
+// Define an array of theme objects
 const THEMES = [
   { name: "Pastel Pink", class: "bg-gradient-to-r from-pink-100 via-rose-50 to-purple-100" },
   { name: "Blue Neon", class: "bg-gradient-to-r from-blue-100 via-sky-100 to-cyan-100" },
@@ -16,17 +17,30 @@ const THEMES = [
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(0);
 
+  // On mount, pick a random theme (if you still want that):
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * THEMES.length);
     setThemeIndex(randomIndex);
+  }, []);
+
+  // Force a reload if the page is shown from the back-forward cache
+  useEffect(() => {
+    function handlePageShow(event: PageTransitionEvent) {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    }
+
+    window.addEventListener("pageshow", handlePageShow);
+    return () => {
+      window.removeEventListener("pageshow", handlePageShow);
+    };
   }, []);
 
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
   };
 
-  // The new domain from your Cognito user pool's Hosted UI
-  // And the new app client ID, with callback /callback
   const handleSignIn = () => {
     window.location.href =
       "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com/login" +
