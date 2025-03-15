@@ -9,15 +9,14 @@ export function middleware(req: NextRequest) {
     const token = req.cookies.get("access_token");
     if (!token) {
       console.log("Middleware: No access token found, redirecting to home.");
-      return NextResponse.redirect(new URL("/", req.url));
+      const response = NextResponse.redirect(new URL("/", req.url));
+      response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+      return response;
     }
   }
-
-  // Optionally set no-cache headers on every route or just the /dashboard
-  // for the sake of back-button issues:
-  const res = NextResponse.next();
-  res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
-  return res;
+  const response = NextResponse.next();
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  return response;
 }
 
 export const config = {

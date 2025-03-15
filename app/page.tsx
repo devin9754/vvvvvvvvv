@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Themes
 const THEMES = [
   { name: "Pastel Pink", class: "bg-gradient-to-r from-pink-100 via-rose-50 to-purple-100" },
   { name: "Blue Neon", class: "bg-gradient-to-r from-blue-100 via-sky-100 to-cyan-100" },
@@ -17,31 +16,15 @@ const THEMES = [
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(0);
 
-  // Random theme on mount
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * THEMES.length);
     setThemeIndex(randomIndex);
   }, []);
 
-  // Force a reload if user navigates back from the Dashboard after logout
-  useEffect(() => {
-    function handlePageShow(event: PageTransitionEvent) {
-      if (event.persisted) {
-        window.location.reload();
-      }
-    }
-    window.addEventListener("pageshow", handlePageShow);
-    return () => {
-      window.removeEventListener("pageshow", handlePageShow);
-    };
-  }, []);
-
-  // Switch theme from a dropdown
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
   };
 
-  // Use your actual Cognito domain & client ID
   const handleSignIn = () => {
     window.location.href =
       "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com/login" +
