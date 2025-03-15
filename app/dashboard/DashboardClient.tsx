@@ -55,7 +55,7 @@ export default function DashboardClient() {
       transition={{ duration: 0.8 }}
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col transition-colors duration-500`}
     >
-      {/* Top Navigation (no dropdown here) */}
+      {/* Top Navigation */}
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-purple-700 tracking-wide">
           DigiModels Dashboard
