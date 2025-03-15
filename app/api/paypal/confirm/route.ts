@@ -1,7 +1,7 @@
-// app/api/paypal/confirm/route.ts
 import { NextResponse } from "next/server";
 import AWS from "aws-sdk";
 
+// Cognito config
 const cognito = new AWS.CognitoIdentityServiceProvider({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
@@ -10,35 +10,32 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
   },
 });
 
-// Replace with your actual user pool
+// The new user pool ID & group name
 const USER_POOL_ID = "us-east-1_LE1OnaNPP";
 const GROUP_NAME = "PaidMember";
 
 export async function POST(request: Request) {
   try {
-    // 1) Retrieve the user’s email or username from somewhere:
-    // e.g., from a cookie, from the request body, from session, etc.
-    // For example, if the user’s email is in the JSON body:
+    // For real usage, parse the user’s email or sub from PayPal callback
+    // or from session. Example: { userEmail: "someone@example.com" }
     const body = await request.json();
-    const userEmail = body?.userEmail; 
-    // Or if you have a cookie with the ID token or user sub, parse it.
+    const userEmail = body?.userEmail;
 
     if (!userEmail) {
       return NextResponse.json({ success: false, error: "No user email provided" }, { status: 400 });
     }
 
-    // 2) Add them to the PaidMember group
+    // Add user to the PaidMember group
     await cognito
       .adminAddUserToGroup({
         UserPoolId: USER_POOL_ID,
-        Username: userEmail, // or the user’s actual Cognito Username
+        Username: userEmail, // Must match the actual username in Cognito
         GroupName: GROUP_NAME,
       })
       .promise();
 
-    // 3) Return success
     return NextResponse.json({ success: true });
-  } catch (error: unknown) {
+  } catch (error) {
     let errorMessage = "Unknown error";
     if (error instanceof Error) {
       errorMessage = error.message;

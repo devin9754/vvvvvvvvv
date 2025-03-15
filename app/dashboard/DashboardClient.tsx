@@ -1,4 +1,3 @@
-// app/dashboard/DashboardClient.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -17,7 +16,7 @@ export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
 
-  // On mount, load the saved theme from localStorage (if any)
+  // Load the saved theme from localStorage (if any)
   useEffect(() => {
     const storedThemeIndex = localStorage.getItem("themeIndex");
     if (storedThemeIndex !== null) {
@@ -25,14 +24,14 @@ export default function DashboardClient() {
     }
   }, []);
 
-  // When the user picks a new theme, update state and persist it
+  // Theme selection changes
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newIndex = parseInt(e.target.value, 10);
     setThemeIndex(newIndex);
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // Load the private video by calling the API route
+  // Fetch a presigned URL from /api/videos/training
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -60,7 +59,6 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
-          {/* Logout form using POST */}
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
@@ -72,7 +70,7 @@ export default function DashboardClient() {
         </div>
       </header>
 
-      {/* Hero Video Section */}
+      {/* Example: Hero or existing video */}
       <section className="py-4">
         <div className="relative w-full max-w-5xl mx-auto px-4">
           <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
@@ -124,9 +122,10 @@ export default function DashboardClient() {
           </nav>
         </aside>
 
-        {/* Main Content */}
+        {/* Main Dashboard Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
+            {/* Intro Card */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
               <h2 className="text-3xl font-bold text-gray-900 mb-2">
                 Welcome to Your Dashboard
@@ -157,9 +156,11 @@ export default function DashboardClient() {
               )}
             </div>
 
-            {/* Theme Selection at the Bottom */}
+            {/* Theme Selection */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Theme Selection</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Theme Selection
+              </h3>
               <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
               <select
                 aria-label="Theme Selection"

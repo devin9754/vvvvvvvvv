@@ -1,4 +1,3 @@
-// app/dashboard/PayPalButton.tsx
 "use client";
 
 import React from "react";
