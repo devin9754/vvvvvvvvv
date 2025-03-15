@@ -9,8 +9,10 @@ export function middleware(req: NextRequest) {
   ) {
     const token = req.cookies.get("access_token");
     if (!token) {
-      console.log("Middleware: No access token found, redirecting to home.");
-      return NextResponse.redirect(new URL("/", req.url));
+      // Ensure response is not cached:
+      const res = NextResponse.redirect(new URL("/", req.url));
+      res.headers.set("Cache-Control", "no-store");
+      return res;
     }
   }
   return NextResponse.next();
