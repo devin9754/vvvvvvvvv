@@ -232,5 +232,6 @@ export default function DashboardClient() {
         </div>
       </div>
     </motion.div>
+    
   );
 }
