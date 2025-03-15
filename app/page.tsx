@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Define theme array
+// Define an array of theme objects
 const THEMES = [
   { name: "Pastel Pink", class: "bg-gradient-to-r from-pink-100 via-rose-50 to-purple-100" },
   { name: "Blue Neon", class: "bg-gradient-to-r from-blue-100 via-sky-100 to-cyan-100" },
@@ -24,7 +24,7 @@ export default function Home() {
     setThemeIndex(randomIndex);
   }, []);
 
-  // Handler for theme selection
+  // Handle dropdown changes
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
   };
@@ -88,7 +88,7 @@ export default function Home() {
               >
                 Get Started
               </Button>
-              {/* Dropdown for theme selection */}
+              {/* The select with aria-label */}
               <select
                 aria-label="Theme Selection"
                 value={themeIndex}
