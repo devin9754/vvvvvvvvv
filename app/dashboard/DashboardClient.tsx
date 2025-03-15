@@ -16,12 +16,6 @@ export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
 
-  // Pick a random theme on mount
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * THEMES.length);
-    setThemeIndex(randomIndex);
-  }, []);
-
   // Dropdown handler for theme selection
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
