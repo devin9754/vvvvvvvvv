@@ -1,9 +1,11 @@
+// app/api/auth/callback/route.ts
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
 const COGNITO_DOMAIN = "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "4a8r52l7d5267hle2liar1nr6p";
-const CLIENT_SECRET = "1f1k65mo3jmakcmjabtf40kvna6f5s9o0pg5aguni34fb9s0a141";
+// Instead of a hard-coded secret, read from env:
+const CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET || "";
 const REDIRECT_URI = "https://digimodels.store/callback";
 
 export async function GET(request: Request) {
@@ -20,6 +22,7 @@ export async function GET(request: Request) {
   params.append("code", code);
   params.append("redirect_uri", REDIRECT_URI);
 
+  // Generate the Basic Auth header from env-based secret:
   const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
 
   try {
