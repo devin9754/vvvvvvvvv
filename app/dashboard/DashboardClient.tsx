@@ -1,3 +1,4 @@
+// app/dashboard/DashboardClient.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -16,12 +17,22 @@ export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
 
-  // Dropdown handler for theme selection
+  // On mount, load the saved theme from localStorage (if any)
+  useEffect(() => {
+    const storedThemeIndex = localStorage.getItem("themeIndex");
+    if (storedThemeIndex !== null) {
+      setThemeIndex(parseInt(storedThemeIndex, 10));
+    }
+  }, []);
+
+  // When the user picks a new theme, update state and persist it
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setThemeIndex(parseInt(e.target.value, 10));
+    const newIndex = parseInt(e.target.value, 10);
+    setThemeIndex(newIndex);
+    localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // Load the private video by calling /api/videos/training
+  // Load the private video by calling the API route
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -49,15 +60,8 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
-          <button
-            onClick={() => setThemeIndex((prev) => (prev + 1) % THEMES.length)}
-            className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
-          >
-            Switch Theme
-          </button>
-
-          {/* Logout form that sends POST to /api/auth/logout */}
-          <form action="/api/auth/logout" method="POST">
+          {/* Logout form using POST */}
+          <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
               className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
@@ -124,7 +128,9 @@ export default function DashboardClient() {
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Your Dashboard</h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">
+                Welcome to Your Dashboard
+              </h2>
               <p className="text-gray-600">
                 This content is protected. Explore your recent activity and exclusive content below.
               </p>
@@ -132,7 +138,9 @@ export default function DashboardClient() {
 
             {/* Load Private Video Section */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Access Premium Training Video</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Access Premium Training Video
+              </h3>
               <p className="text-gray-600 mb-4">
                 Tap the button below to load your exclusive video course.
               </p>
@@ -149,7 +157,7 @@ export default function DashboardClient() {
               )}
             </div>
 
-            {/* Theme Selection */}
+            {/* Theme Selection at the Bottom */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Theme Selection</h3>
               <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
