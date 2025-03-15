@@ -1,3 +1,4 @@
+// app/api/paypal/confirm/route.ts
 import { NextResponse } from "next/server";
 import AWS from "aws-sdk";
 
@@ -25,13 +26,11 @@ export async function POST() {
 
     return NextResponse.json({ success: true });
   } catch (error: unknown) {
-    // We actually use the `error` here to avoid the ESLint "unused" warning.
     let errorMessage = "Unknown error";
     if (error instanceof Error) {
       errorMessage = error.message;
     }
     console.error("Error adding user to group:", errorMessage);
-
     return NextResponse.json({ success: false, error: errorMessage }, { status: 500 });
   }
 }

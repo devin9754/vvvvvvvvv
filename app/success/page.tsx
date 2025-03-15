@@ -9,7 +9,6 @@ export default function SuccessPage() {
   const router = useRouter();
 
   useEffect(() => {
-    // Call /api/paypal/confirm
     fetch("/api/paypal/confirm", { method: "POST" })
       .then((res) => res.json())
       .then((data) => {
