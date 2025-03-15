@@ -6,7 +6,6 @@ import React from "react";
 export default function PayPalButton() {
   return (
     <div className="flex flex-col items-center justify-center space-y-2">
-      {/* PayPal Button Form */}
       <form
         action="https://www.paypal.com/ncp/payment/QCX6CM548NXDN"
         method="post"
@@ -14,7 +13,6 @@ export default function PayPalButton() {
         style={{ display: "inline-grid", justifyItems: "center", alignContent: "start", gap: "0.5rem" }}
       >
         <input
-          className="pp-QCX6CM548NXDN"
           type="submit"
           value="Pay Now"
           style={{

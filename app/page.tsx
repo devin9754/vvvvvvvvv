@@ -6,7 +6,7 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Define an array of theme objects with a name and Tailwind CSS gradient class.
+// Define theme array
 const THEMES = [
   { name: "Pastel Pink", class: "bg-gradient-to-r from-pink-100 via-rose-50 to-purple-100" },
   { name: "Blue Neon", class: "bg-gradient-to-r from-blue-100 via-sky-100 to-cyan-100" },
@@ -18,13 +18,13 @@ const THEMES = [
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(0);
 
-  // Pick a random theme on mount.
+  // Pick a random theme on mount
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * THEMES.length);
     setThemeIndex(randomIndex);
   }, []);
 
-  // Handler for dropdown theme selection.
+  // Handler for theme selection
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
   };
@@ -90,6 +90,7 @@ export default function Home() {
               </Button>
               {/* Dropdown for theme selection */}
               <select
+                aria-label="Theme Selection"
                 value={themeIndex}
                 onChange={handleThemeSelect}
                 className="border border-purple-300 rounded-md px-3 py-2 text-purple-700"

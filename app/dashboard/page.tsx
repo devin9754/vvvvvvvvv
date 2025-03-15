@@ -8,7 +8,7 @@ type CookieStore = {
 };
 
 export default async function DashboardPage() {
-  const cookieStore = (await cookies()) as unknown as CookieStore;
+  const cookieStore = cookies() as unknown as CookieStore;
   const token = cookieStore.get("access_token")?.value;
   if (!token) {
     redirect("/");
