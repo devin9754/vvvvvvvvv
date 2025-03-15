@@ -12,7 +12,12 @@ export function middleware(req: NextRequest) {
       return NextResponse.redirect(new URL("/", req.url));
     }
   }
-  return NextResponse.next();
+
+  // Optionally set no-cache headers on every route or just the /dashboard
+  // for the sake of back-button issues:
+  const res = NextResponse.next();
+  res.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  return res;
 }
 
 export const config = {

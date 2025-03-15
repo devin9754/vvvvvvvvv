@@ -1,10 +1,9 @@
-// app/api/auth/callback/route.ts
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
+// Your real domain, client ID, user pool domain
 const COGNITO_DOMAIN = "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "4a8r52l7d5267hle2liar1nr6p";
-// Instead of a hard-coded secret, read from env:
 const CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET || "";
 const REDIRECT_URI = "https://digimodels.store/callback";
 
@@ -22,7 +21,6 @@ export async function GET(request: Request) {
   params.append("code", code);
   params.append("redirect_uri", REDIRECT_URI);
 
-  // Generate the Basic Auth header from env-based secret:
   const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
 
   try {
@@ -44,6 +42,7 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
+    // Once we have the access token, set it in a cookie and redirect to dashboard
     const response = NextResponse.redirect("https://digimodels.store/dashboard");
     response.cookies.set("access_token", accessToken || "", {
       path: "/",

@@ -16,7 +16,7 @@ export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
 
-  // Load the saved theme from localStorage (if any)
+  // Load theme from localStorage
   useEffect(() => {
     const storedThemeIndex = localStorage.getItem("themeIndex");
     if (storedThemeIndex !== null) {
@@ -24,14 +24,14 @@ export default function DashboardClient() {
     }
   }, []);
 
-  // Theme selection changes
+  // Save new theme selection
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newIndex = parseInt(e.target.value, 10);
     setThemeIndex(newIndex);
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // Fetch a presigned URL from /api/videos/training
+  // Attempt to load the private S3 video
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -55,22 +55,20 @@ export default function DashboardClient() {
       transition={{ duration: 0.8 }}
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col transition-colors duration-500`}
     >
-      {/* Top Navigation */}
-      <header className="flex items-center justify-between p-4">
+      {/* Top Nav */}
+      <header className="flex items-center justify-between p-4 bg-white border-b border-gray-200">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
-        <div className="flex items-center gap-4">
-          <form action="https://digimodels.store/api/auth/logout" method="POST">
-            <button
-              type="submit"
-              className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
-            >
-              Log Out
-            </button>
-          </form>
-        </div>
+        <form action="https://digimodels.store/api/auth/logout" method="POST">
+          <button
+            type="submit"
+            className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
+          >
+            Log Out
+          </button>
+        </form>
       </header>
 
-      {/* Example: Hero or existing video */}
+      {/* Example hero video */}
       <section className="py-4">
         <div className="relative w-full max-w-5xl mx-auto px-4">
           <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
@@ -87,9 +85,9 @@ export default function DashboardClient() {
         </div>
       </section>
 
-      {/* Purchase Access Section */}
+      {/* Purchase Access */}
       <section className="py-6">
-        <div className="max-w-5xl mx-auto text-center space-y-4 backdrop-blur-sm">
+        <div className="max-w-5xl mx-auto text-center space-y-4">
           <h2 className="text-2xl font-bold text-purple-700">
             Purchase Access to Exclusive Videos
           </h2>
@@ -100,42 +98,40 @@ export default function DashboardClient() {
         </div>
       </section>
 
+      {/* Content */}
       <div className="flex flex-1 overflow-hidden mt-4 px-4">
         {/* Sidebar */}
         <aside className="hidden md:flex flex-col w-64 border-r border-gray-200 p-4 mr-4 rounded-xl shadow-md">
-          <nav className="flex flex-col space-y-2">
-            <a href="/dashboard/overview" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+          <nav className="flex flex-col space-y-2 text-gray-700">
+            <a href="/dashboard/overview" className="px-3 py-2 rounded hover:bg-gray-100">
               Overview
             </a>
-            <a href="/dashboard/recent-activity" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+            <a href="/dashboard/recent-activity" className="px-3 py-2 rounded hover:bg-gray-100">
               Recent Activity
             </a>
-            <a href="/dashboard/courses" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+            <a href="/dashboard/courses" className="px-3 py-2 rounded hover:bg-gray-100">
               Courses
             </a>
-            <a href="/dashboard/settings" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+            <a href="/dashboard/settings" className="px-3 py-2 rounded hover:bg-gray-100">
               Settings
             </a>
-            <a href="/dashboard/announcements" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+            <a href="/dashboard/announcements" className="px-3 py-2 rounded hover:bg-gray-100">
               Announcements
             </a>
           </nav>
         </aside>
 
-        {/* Main Dashboard Content */}
+        {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
-            {/* Intro Card */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                Welcome to Your Dashboard
-              </h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Your Dashboard</h2>
               <p className="text-gray-600">
                 This content is protected. Explore your recent activity and exclusive content below.
               </p>
             </div>
 
-            {/* Load Private Video Section */}
+            {/* Private Video Button */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 Access Premium Training Video
@@ -151,7 +147,12 @@ export default function DashboardClient() {
               </button>
               {videoUrl && (
                 <div className="mt-4">
-                  <video src={videoUrl} controls autoPlay className="w-full rounded-md shadow-md" />
+                  <video
+                    src={videoUrl}
+                    controls
+                    autoPlay
+                    className="w-full rounded-md shadow-md"
+                  />
                 </div>
               )}
             </div>

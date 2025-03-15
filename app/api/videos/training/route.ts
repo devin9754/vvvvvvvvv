@@ -3,6 +3,9 @@ import AWS from "aws-sdk";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
+// We have your environment variables set on DigitalOcean:
+// AWS_ACCESS_KEY_ID, AWS_SECRET_ACCESS_KEY, AWS_REGION = "us-east-1" for Cognito
+// S3 is in "us-west-1"
 const cognito = new AWS.CognitoIdentityServiceProvider({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
@@ -19,15 +22,21 @@ const s3 = new S3Client({
   },
 });
 
+// The S3 bucket + video
 const BUCKET_NAME = "digimodels-members";
 const VIDEO_KEY = "EPD_Short_Reels_03.mp4";
 
+// The group name in your user pool
+const GROUP_NAME = "PaidMembers";
+
 export async function GET(request: NextRequest) {
+  // 1) Check for access_token cookie
   const token = request.cookies.get("access_token")?.value;
   if (!token) {
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
+  // 2) Attempt to get user from Cognito
   let userData;
   try {
     userData = await cognito.getUser({ AccessToken: token }).promise();
@@ -36,7 +45,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 
-  // Attempt to find the "cognito:groups" attribute
+  // 3) Look for "cognito:groups" in the user attributes
   const groupAttr = userData.UserAttributes?.find(
     (attr) => attr.Name === "cognito:groups"
   );
@@ -44,6 +53,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
 
+  // 4) Parse the group list
   let groupList: string[] = [];
   try {
     groupList = JSON.parse(groupAttr.Value);
@@ -51,11 +61,12 @@ export async function GET(request: NextRequest) {
     groupList = [groupAttr.Value];
   }
 
-  // Check for "PaidMembers" now, not "PaidMember"
-  if (!groupList.includes("PaidMembers")) {
+  // 5) Check if user is in "PaidMembers"
+  if (!groupList.includes(GROUP_NAME)) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
 
+  // 6) Generate a signed URL for the private video
   try {
     const command = new GetObjectCommand({
       Bucket: BUCKET_NAME,

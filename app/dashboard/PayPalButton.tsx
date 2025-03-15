@@ -1,4 +1,3 @@
-// app/dashboard/PayPalButton.tsx
 "use client";
 
 import React from "react";
@@ -35,14 +34,6 @@ export default function PayPalButton() {
           src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg"
           alt="cards"
         />
-        <section>
-          Powered by{" "}
-          <img
-            src="https://www.paypalobjects.com/paypal-ui/logos/svg/paypal-wordmark-color.svg"
-            alt="paypal"
-            style={{ height: "0.875rem", verticalAlign: "middle" }}
-          />
-        </section>
       </form>
     </div>
   );
