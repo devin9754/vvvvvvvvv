@@ -32,9 +32,6 @@ const THEMES = [
 export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
 
-  // For optional video demonstration
-  const [videoUrl, setVideoUrl] = useState("");
-
   // Pick a random theme on mount
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * THEMES.length);
@@ -49,21 +46,6 @@ export default function DashboardClient() {
   // If user selects from the dropdown
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
-  };
-
-  // Fetch a signed URL from /api/videos/training
-  const handleLoadVideo = async () => {
-    try {
-      const res = await fetch("/api/videos/training");
-      const data = await res.json();
-      if (data.signedUrl) {
-        setVideoUrl(data.signedUrl);
-      } else {
-        console.error("No signedUrl returned:", data);
-      }
-    } catch (error) {
-      console.error("Error loading video:", error);
-    }
   };
 
   return (
@@ -223,31 +205,6 @@ export default function DashboardClient() {
               <p className="text-gray-600">
                 Add more widgets or course content here as you expand the app.
               </p>
-            </div>
-
-            {/* Exclusive Video Section (New) */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300 hover:shadow-lg transition">
-              <h3 className="text-xl font-semibold text-purple-800 mb-2">
-                Exclusive Video
-              </h3>
-              <p className="text-gray-600 mb-2">
-                Click the button to load a training video from /api/videos/training:
-              </p>
-              <button
-                onClick={handleLoadVideo}
-                className="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-md shadow-md"
-              >
-                Load Video
-              </button>
-              {videoUrl && (
-                <div className="mt-4">
-                  <video
-                    src={videoUrl}
-                    controls
-                    className="w-full rounded-md shadow-md"
-                  />
-                </div>
-              )}
             </div>
 
             {/* Theme Selection at the Bottom */}
