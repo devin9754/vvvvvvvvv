@@ -2,24 +2,23 @@
 import { NextResponse } from "next/server";
 import AWS from "aws-sdk";
 
-// 1) Make sure you've installed aws-sdk: npm install aws-sdk
-// 2) Adjust region to match your user pool's region
+// Initialize the Cognito provider with the us-east-1 region
 const cognito = new AWS.CognitoIdentityServiceProvider({
-  region: "us-west-1",
+  region: "us-east-1",
 });
 
-// Replace with your actual user pool ID
-const USER_POOL_ID = "us-east-1_XXXXXX";
-// Group name you want to add user to
+// Replace with your actual user pool ID (from your Cognito user pool configuration)
+const USER_POOL_ID = "us-east-1_13qoo9QXx";
+// The group name that grants access to paid training videos
 const GROUP_NAME = "PaidMember";
 
-// Hard-coded example: in production, you'd figure out the actual Cognito username
-// maybe from session or matching PayPal email to Cognito email
+// For demonstration, we hard-code the Cognito username.
+// In production, match the PayPal payer’s email or ID to your Cognito user.
 const TEST_USERNAME = "testuser@example.com";
 
 export async function POST() {
   try {
-    // Naive approach: no real PayPal verification
+    // Naively add the user to the PaidMember group (no real PayPal verification here)
     await cognito
       .adminAddUserToGroup({
         UserPoolId: USER_POOL_ID,
