@@ -1,4 +1,3 @@
-// app/dashboard/DashboardClient.tsx
 "use client";
 
 import { motion } from "framer-motion";
@@ -62,7 +61,9 @@ export default function DashboardClient() {
           >
             Switch Theme
           </button>
-          <form action="https://digimodels.store/api/auth/logout" method="POST">
+
+          {/* Logout form that sends POST to /api/auth/logout */}
+          <form action="/api/auth/logout" method="POST">
             <button
               type="submit"
               className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
@@ -154,7 +155,7 @@ export default function DashboardClient() {
               )}
             </div>
 
-            {/* Theme Selection at the Bottom */}
+            {/* Theme Selection */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Theme Selection</h3>
               <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
