@@ -15,6 +15,11 @@ const THEMES = [
   { name: "Yellow Orange", class: "bg-gradient-to-r from-yellow-100 via-amber-50 to-orange-100" },
 ];
 
+// Updated Cognito details
+// Domain:    us-east-1dg6c9986i.auth.us-east-1.amazoncognito.com
+// Client ID: d4ur8gqqebldshl95m6t2sj37
+// Callback:  https://digimodels.store/callback
+
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(0);
 
@@ -29,13 +34,14 @@ export default function Home() {
     setThemeIndex(parseInt(e.target.value, 10));
   };
 
+  // Updated sign-in logic with your new Cognito domain & client ID
   const handleSignIn = () => {
     window.location.href =
-      "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com/login" +
-      "?client_id=46a9rm6mfce87enhsjk507mn9r" +
+      "https://us-east-1dg6c9986i.auth.us-east-1.amazoncognito.com/login" +
+      "?client_id=d4ur8gqqebldshl95m6t2sj37" +
       "&response_type=code" +
       "&scope=email+openid+phone" +
-      "&redirect_uri=https%3A%2F%2Fdigimodels.store%2Fapi%2Fauth%2Fcallback";
+      "&redirect_uri=https%3A%2F%2Fdigimodels.store%2Fcallback";
   };
 
   return (
