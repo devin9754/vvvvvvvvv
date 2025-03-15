@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Define an array of theme objects
 const THEMES = [
   { name: "Pastel Pink", class: "bg-gradient-to-r from-pink-100 via-rose-50 to-purple-100" },
   { name: "Blue Neon", class: "bg-gradient-to-r from-blue-100 via-sky-100 to-cyan-100" },
@@ -15,30 +14,23 @@ const THEMES = [
   { name: "Yellow Orange", class: "bg-gradient-to-r from-yellow-100 via-amber-50 to-orange-100" },
 ];
 
-// Updated Cognito details
-// Domain:    us-east-1dg6c9986i.auth.us-east-1.amazoncognito.com
-// Client ID: d4ur8gqqebldshl95m6t2sj37
-// Callback:  https://digimodels.store/callback
-
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(0);
 
-  // Pick a random theme on mount
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * THEMES.length);
     setThemeIndex(randomIndex);
   }, []);
 
-  // Handle dropdown changes
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
   };
 
-  // Updated sign-in logic with your new Cognito domain & client ID
+  // New Cognito login URL with your values:
   const handleSignIn = () => {
     window.location.href =
       "https://us-east-1dg6c9986i.auth.us-east-1.amazoncognito.com/login" +
-      "?client_id=d4ur8gqqebldshl95m6t2sj37" +
+      "?client_id=722jsurgdcaflis4eleb7t9e3g" +
       "&response_type=code" +
       "&scope=email+openid+phone" +
       "&redirect_uri=https%3A%2F%2Fdigimodels.store%2Fcallback";
@@ -94,7 +86,6 @@ export default function Home() {
               >
                 Get Started
               </Button>
-              {/* The select with aria-label */}
               <select
                 aria-label="Theme Selection"
                 value={themeIndex}
