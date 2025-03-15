@@ -5,7 +5,7 @@ import { Buffer } from "buffer";
 // Use your actual domain, client ID, secret, and callback
 const COGNITO_DOMAIN = "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "4a8r52l7d5267hle2liar1nr6p";
-const CLIENT_SECRET = "";
+const CLIENT_SECRET = "1f1k65mo3jmakcmjabtf40kvna6f5s9o0pg5aguni34fb9s0a141";
 const REDIRECT_URI = "https://digimodels.store/callback";
 
 export async function GET(request: Request) {
