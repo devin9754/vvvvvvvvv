@@ -2,10 +2,11 @@
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
-const COGNITO_DOMAIN = "https://us-east-1nvdll7sku.auth.us-east-1.amazoncognito.com";
-const CLIENT_ID = "46a9rm6mfce87enhsjk507mn9r";
-const CLIENT_SECRET = "3ciqhcjh2i1292iblbj7mjc7c00bk078gv9rq97p3umm2129r65";
-const REDIRECT_URI = "https://digimodels.store/api/auth/callback";
+const COGNITO_DOMAIN = "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com";
+const CLIENT_ID = "4a8r52l7d5267hle2liar1nr6p";
+// Assuming a public client; if you have a secret, place it here:
+const CLIENT_SECRET = "";
+const REDIRECT_URI = "https://digimodels.store/callback";
 
 export async function GET(request: Request) {
   const url = new URL(request.url);
@@ -50,7 +51,6 @@ export async function GET(request: Request) {
       sameSite: "lax",
       maxAge: 60 * 60 * 24 * 7, // 7 days
     });
-
     return response;
   } catch (error) {
     console.error("Error exchanging code for tokens:", error);

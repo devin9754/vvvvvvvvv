@@ -5,35 +5,16 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
-// Define an array of theme objects
 const THEMES = [
-  {
-    name: "Pastel Pink",
-    class: "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100",
-  },
-  {
-    name: "Blue Neon",
-    class: "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100",
-  },
-  {
-    name: "Green Light",
-    class: "bg-gradient-to-br from-lime-100 via-green-50 to-teal-100",
-  },
-  {
-    name: "Fuchsia Mix",
-    class: "bg-gradient-to-br from-fuchsia-100 via-pink-100 to-rose-100",
-  },
-  {
-    name: "Yellow Orange",
-    class: "bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-100",
-  },
+  { name: "Pastel Pink", class: "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100" },
+  { name: "Blue Neon", class: "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100" },
+  { name: "Green Light", class: "bg-gradient-to-br from-lime-100 via-green-50 to-teal-100" },
+  { name: "Fuchsia Mix", class: "bg-gradient-to-br from-fuchsia-100 via-pink-100 to-rose-100" },
+  { name: "Yellow Orange", class: "bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-100" },
 ];
 
 export default function DashboardClient() {
-  // State for theme selection
   const [themeIndex, setThemeIndex] = useState(0);
-
-  // State for storing the signed URL to the private video
   const [videoUrl, setVideoUrl] = useState("");
 
   // Pick a random theme on mount
@@ -42,12 +23,7 @@ export default function DashboardClient() {
     setThemeIndex(randomIndex);
   }, []);
 
-  // Button: cycle to the next theme in the array
-  const handleSwitchTheme = () => {
-    setThemeIndex((prev) => (prev + 1) % THEMES.length);
-  };
-
-  // Dropdown: pick a theme by index
+  // Dropdown handler for theme selection
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
   };
@@ -58,10 +34,8 @@ export default function DashboardClient() {
       .then((res) => res.json())
       .then((data) => {
         if (data.signedUrl) {
-          // If the user is in PaidMember, we get a signedUrl
           setVideoUrl(data.signedUrl);
         } else {
-          // If not, or an error occurs, we show an alert
           alert("Unable to load video. " + (data.error || "Payment required."));
         }
       })
@@ -80,18 +54,14 @@ export default function DashboardClient() {
     >
       {/* Top Navigation */}
       <header className="flex items-center justify-between p-4">
-        <h1 className="text-xl font-bold text-purple-700 tracking-wide">
-          DigiModels Dashboard
-        </h1>
+        <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
-          {/* Switch Theme Button */}
           <button
-            onClick={handleSwitchTheme}
+            onClick={() => setThemeIndex((prev) => (prev + 1) % THEMES.length)}
             className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
           >
             Switch Theme
           </button>
-          {/* Form-based logout => POST */}
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
@@ -135,115 +105,64 @@ export default function DashboardClient() {
 
       <div className="flex flex-1 overflow-hidden mt-4 px-4">
         {/* Sidebar */}
-        <aside className="hidden md:flex flex-col w-64 border-r border-purple-300 p-4 mr-4 rounded-xl shadow-md backdrop-blur-sm">
-          <h2 className="text-lg font-semibold text-gray-700 mb-4 border-b pb-2">
-            Navigation
-          </h2>
-          <nav className="flex flex-col space-y-3 text-gray-700">
-            <a
-              href="/dashboard/overview"
-              className="hover:text-purple-700 hover:font-semibold transition"
-            >
+        <aside className="hidden md:flex flex-col w-64 border-r border-gray-200 p-4 mr-4 rounded-xl shadow-md">
+          <nav className="flex flex-col space-y-2">
+            <a href="/dashboard/overview" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Overview
             </a>
-            <a
-              href="/dashboard/recent-activity"
-              className="hover:text-purple-700 hover:font-semibold transition"
-            >
+            <a href="/dashboard/recent-activity" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Recent Activity
             </a>
-            <a
-              href="/dashboard/courses"
-              className="hover:text-purple-700 hover:font-semibold transition"
-            >
+            <a href="/dashboard/courses" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Courses
             </a>
-            <a
-              href="/dashboard/settings"
-              className="hover:text-purple-700 hover:font-semibold transition"
-            >
+            <a href="/dashboard/settings" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Settings
             </a>
-            <a
-              href="/dashboard/announcements"
-              className="hover:text-purple-700 hover:font-semibold transition"
-            >
+            <a href="/dashboard/announcements" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
               Announcements
             </a>
           </nav>
         </aside>
 
-        {/* Main Dashboard Content */}
+        {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
-            {/* Welcome Section */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300">
-              <h2 className="text-3xl font-extrabold text-purple-700 mb-2">
-                Welcome to Your Dashboard
-              </h2>
-              <p className="text-gray-700">
+            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Your Dashboard</h2>
+              <p className="text-gray-600">
                 This content is protected. Explore your recent activity and exclusive content below.
               </p>
             </div>
 
-            {/* Cards Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300 hover:shadow-lg transition">
-                <h3 className="text-xl font-semibold text-purple-800 mb-2">
-                  Recent Activity
-                </h3>
-                <p className="text-gray-600">
-                  Keep track of your latest actions and progress here.
-                </p>
-                <a
-                  href="/dashboard/recent-activity"
-                  className="mt-2 inline-block text-purple-600 hover:underline"
-                >
-                  View Details
-                </a>
-              </div>
-              <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300 hover:shadow-lg transition">
-                <h3 className="text-xl font-semibold text-purple-800 mb-2">
-                  Quick Links
-                </h3>
-                <ul className="list-disc list-inside text-gray-600 space-y-1 mt-2">
-                  <li>
-                    <a href="/profile" className="text-pink-600 hover:underline">
-                      Manage Profile
-                    </a>
-                  </li>
-                  <li>
-                    <a href="/reports" className="text-pink-600 hover:underline">
-                      View Reports
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-
-            {/* Additional Content Section */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300 hover:shadow-lg transition">
-              <h3 className="text-xl font-semibold text-purple-800 mb-2">
-                Additional Content
-              </h3>
-              <p className="text-gray-600">
-                Add more widgets or course content here as you expand the app.
+            {/* Load Private Video Section */}
+            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Access Premium Training Video</h3>
+              <p className="text-gray-600 mb-4">
+                Tap the button below to load your exclusive video course.
               </p>
+              <button
+                onClick={handleLoadVideo}
+                className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold px-6 py-3 rounded-full shadow-xl transform hover:scale-105 transition"
+              >
+                Watch Premium Video
+              </button>
+              {videoUrl && (
+                <div className="mt-4">
+                  <video src={videoUrl} controls autoPlay className="w-full rounded-md shadow-md" />
+                </div>
+              )}
             </div>
 
             {/* Theme Selection at the Bottom */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300 hover:shadow-lg transition">
-              <h3 className="text-xl font-semibold text-purple-800 mb-2">
-                Theme Selection
-              </h3>
-              <p className="text-gray-600 mb-2">
-                Pick your favorite pastel style:
-              </p>
+            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Theme Selection</h3>
+              <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
               <select
                 aria-label="Theme Selection"
                 value={themeIndex}
                 onChange={handleThemeSelect}
-                className="border border-purple-300 rounded-md px-3 py-2 text-purple-700"
+                className="border border-gray-300 rounded-md px-3 py-2 text-gray-800"
               >
                 {THEMES.map((theme, idx) => (
                   <option key={idx} value={idx}>
@@ -251,32 +170,6 @@ export default function DashboardClient() {
                   </option>
                 ))}
               </select>
-            </div>
-
-            {/* Load Private Video Section */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-purple-300 hover:shadow-lg transition">
-              <h3 className="text-xl font-semibold text-purple-800 mb-2">
-                Load Private Video
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Test retrieving a signed URL for a private S3 video.
-              </p>
-              <button
-                onClick={handleLoadVideo}
-                className="bg-purple-200 hover:bg-purple-300 text-purple-800 font-semibold px-4 py-2 rounded-md"
-              >
-                Load Private Video
-              </button>
-              {videoUrl && (
-                <div className="mt-4">
-                  <video
-                    src={videoUrl}
-                    controls
-                    autoPlay
-                    className="w-full rounded-md shadow-md"
-                  />
-                </div>
-              )}
             </div>
           </div>
         </div>
