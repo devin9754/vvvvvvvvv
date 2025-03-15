@@ -2,13 +2,18 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import DashboardClient from "./DashboardClient";
 
-export const dynamic = "force-dynamic";
-export const revalidate = 0;
+type CookieStore = {
+  get: (name: string) => { value: string } | undefined;
+};
 
 export default async function DashboardPage() {
-  const token = cookies().get("access_token")?.value;
+  const cookieStore = cookies() as unknown as CookieStore;
+  const token = cookieStore.get("access_token")?.value;
+
   if (!token) {
+    // If no access token cookie, redirect to home
     redirect("/");
   }
+
   return <DashboardClient />;
 }
