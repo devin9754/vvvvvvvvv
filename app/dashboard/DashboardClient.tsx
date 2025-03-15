@@ -30,7 +30,7 @@ export default function DashboardClient() {
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // Fetch the private video from your API route
+  // Load the private video by calling /api/videos/training
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -58,7 +58,6 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
-          {/* Logout form using POST */}
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
@@ -122,14 +121,12 @@ export default function DashboardClient() {
           </nav>
         </aside>
 
-        {/* Main Dashboard Content */}
+        {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
             {/* Welcome Section */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                Welcome to Your Dashboard
-              </h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Your Dashboard</h2>
               <p className="text-gray-600">
                 This content is protected. Explore your recent activity and exclusive content below.
               </p>
@@ -137,9 +134,7 @@ export default function DashboardClient() {
 
             {/* Load Private Video Section */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Access Premium Training Video
-              </h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Access Premium Training Video</h3>
               <p className="text-gray-600 mb-4">
                 Tap the button below to load your exclusive video course.
               </p>

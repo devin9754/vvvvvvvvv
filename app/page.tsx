@@ -21,11 +21,23 @@ export default function Home() {
     setThemeIndex(randomIndex);
   }, []);
 
+  // Force reload if the page is restored from cache (back‑button)
+  useEffect(() => {
+    function handlePageShow(event: PageTransitionEvent) {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    }
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
+  }, []);
+
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
   };
 
   const handleSignIn = () => {
+    // Using your Cognito login values:
     window.location.href =
       "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com/login" +
       "?client_id=4a8r52l7d5267hle2liar1nr6p" +
