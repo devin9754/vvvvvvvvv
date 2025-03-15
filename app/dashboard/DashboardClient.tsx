@@ -1,7 +1,9 @@
+// File: app/dashboard/DashboardClient.tsx
 "use client";
 
 import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PayPalButton from "./PayPalButton";
 
 const THEMES = [
@@ -13,10 +15,23 @@ const THEMES = [
 ];
 
 export default function DashboardClient() {
+  const router = useRouter();
+
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
 
-  // Load the saved theme from localStorage (if any)
+  // On mount, final check if we have the token
+  useEffect(() => {
+    const hasToken = document.cookie
+      .split("; ")
+      .some((row) => row.startsWith("access_token="));
+    if (!hasToken) {
+      // If no token, forcibly navigate to home
+      router.replace("/");
+    }
+  }, [router]);
+
+  // Load user’s theme preference from localStorage
   useEffect(() => {
     const storedThemeIndex = localStorage.getItem("themeIndex");
     if (storedThemeIndex !== null) {
@@ -24,14 +39,14 @@ export default function DashboardClient() {
     }
   }, []);
 
-  // Theme selection changes
+  // Save the user’s theme preference
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newIndex = parseInt(e.target.value, 10);
     setThemeIndex(newIndex);
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // Fetch a presigned URL from /api/videos/training
+  // Call your /api/videos/training route
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -56,40 +71,26 @@ export default function DashboardClient() {
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col transition-colors duration-500`}
     >
       {/* Top Navigation */}
-      <header className="flex items-center justify-between p-4">
-        <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
-        <div className="flex items-center gap-4">
-          <form action="https://digimodels.store/api/auth/logout" method="POST">
-            <button
-              type="submit"
-              className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
-            >
-              Log Out
-            </button>
-          </form>
-        </div>
+      <header className="bg-white border-b border-gray-200 p-4 flex items-center justify-between">
+        <h1 className="text-lg font-bold text-gray-700">DigiModels Dashboard</h1>
+        <form action="https://digimodels.store/api/auth/logout" method="POST">
+          <button
+            type="submit"
+            className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
+          >
+            Log Out
+          </button>
+        </form>
       </header>
 
-      {/* Example: Hero or existing video */}
-      <section className="py-4">
-        <div className="relative w-full max-w-5xl mx-auto px-4">
-          <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
-            <video
-              className="absolute top-0 left-0 w-full h-full object-cover"
-              controls
-              autoPlay
-              muted
-              loop
-              playsInline
-              src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
-            />
-          </div>
-        </div>
+      {/* Example “hero” or “header” */}
+      <section className="p-6">
+        <p className="text-center text-xl">Welcome, you’re logged in!</p>
       </section>
 
-      {/* Purchase Access Section */}
+      {/* Example: Purchase Access */}
       <section className="py-6">
-        <div className="max-w-5xl mx-auto text-center space-y-4 backdrop-blur-sm">
+        <div className="max-w-5xl mx-auto text-center space-y-4">
           <h2 className="text-2xl font-bold text-purple-700">
             Purchase Access to Exclusive Videos
           </h2>
@@ -100,81 +101,44 @@ export default function DashboardClient() {
         </div>
       </section>
 
-      <div className="flex flex-1 overflow-hidden mt-4 px-4">
-        {/* Sidebar */}
-        <aside className="hidden md:flex flex-col w-64 border-r border-gray-200 p-4 mr-4 rounded-xl shadow-md">
-          <nav className="flex flex-col space-y-2">
-            <a href="/dashboard/overview" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Overview
-            </a>
-            <a href="/dashboard/recent-activity" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Recent Activity
-            </a>
-            <a href="/dashboard/courses" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Courses
-            </a>
-            <a href="/dashboard/settings" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Settings
-            </a>
-            <a href="/dashboard/announcements" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Announcements
-            </a>
-          </nav>
-        </aside>
+      {/* Main content area */}
+      <div className="flex-1 p-6">
+        <div className="max-w-4xl mx-auto space-y-6">
+          <div className="bg-white p-6 rounded shadow">
+            <h3 className="text-xl font-semibold mb-2">Load Private Video</h3>
+            <button
+              onClick={handleLoadVideo}
+              className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold px-6 py-3 rounded-full shadow-xl hover:scale-105 transition"
+            >
+              Watch Premium Video
+            </button>
+            {videoUrl && (
+              <div className="mt-4">
+                <video
+                  src={videoUrl}
+                  controls
+                  autoPlay
+                  className="w-full rounded-md shadow-md"
+                />
+              </div>
+            )}
+          </div>
 
-        {/* Main Dashboard Content */}
-        <div className="flex-1 overflow-y-auto">
-          <div className="max-w-6xl mx-auto space-y-6">
-            {/* Intro Card */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                Welcome to Your Dashboard
-              </h2>
-              <p className="text-gray-600">
-                This content is protected. Explore your recent activity and exclusive content below.
-              </p>
-            </div>
-
-            {/* Load Private Video Section */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Access Premium Training Video
-              </h3>
-              <p className="text-gray-600 mb-4">
-                Tap the button below to load your exclusive video course.
-              </p>
-              <button
-                onClick={handleLoadVideo}
-                className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold px-6 py-3 rounded-full shadow-xl transform hover:scale-105 transition"
-              >
-                Watch Premium Video
-              </button>
-              {videoUrl && (
-                <div className="mt-4">
-                  <video src={videoUrl} controls autoPlay className="w-full rounded-md shadow-md" />
-                </div>
-              )}
-            </div>
-
-            {/* Theme Selection */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Theme Selection
-              </h3>
-              <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
-              <select
-                aria-label="Theme Selection"
-                value={themeIndex}
-                onChange={handleThemeSelect}
-                className="border border-gray-300 rounded-md px-3 py-2 text-gray-800"
-              >
-                {THEMES.map((theme, idx) => (
-                  <option key={idx} value={idx}>
-                    {theme.name}
-                  </option>
-                ))}
-              </select>
-            </div>
+          {/* Theme selection */}
+          <div className="bg-white p-6 rounded shadow">
+            <h3 className="text-xl font-semibold mb-2">Theme Selection</h3>
+            <select
+              aria-label="Theme Selection"
+              value={themeIndex}
+              onChange={handleThemeSelect}
+              className="border border-gray-300 rounded-md px-3 py-2"
+            >
+              {THEMES.map((theme, idx) => (
+                <option key={idx} value={idx}>
+                  {theme.name}
+                </option>
+              ))}
+            </select>
           </div>
         </div>
       </div>

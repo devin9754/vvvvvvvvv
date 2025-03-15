@@ -1,3 +1,4 @@
+// File: app/dashboard/page.tsx
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import DashboardClient from "./DashboardClient";
@@ -6,15 +7,15 @@ type CookieStore = {
   get: (name: string) => { value: string } | undefined;
 };
 
-export default async function DashboardPage() {
+export default function DashboardPage() {
   const cookieStore = cookies() as unknown as CookieStore;
   const token = cookieStore.get("access_token")?.value;
 
   if (!token) {
-    // If no access token cookie, redirect to home
+    // Or rely on the middleware. This is just an extra check
     redirect("/");
   }
 
-  // Otherwise render the client
+  // Render the client-side dashboard
   return <DashboardClient />;
 }
