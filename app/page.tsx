@@ -16,10 +16,21 @@ const THEMES = [
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(0);
 
+  // Pick a random theme on mount
   useEffect(() => {
-    // Pick a random theme on mount
     const randomIndex = Math.floor(Math.random() * THEMES.length);
     setThemeIndex(randomIndex);
+  }, []);
+
+  // Force a reload if page is loaded via back/forward cache
+  useEffect(() => {
+    function handlePageShow(event: PageTransitionEvent) {
+      if (event.persisted) {
+        window.location.reload();
+      }
+    }
+    window.addEventListener("pageshow", handlePageShow);
+    return () => window.removeEventListener("pageshow", handlePageShow);
   }, []);
 
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -27,7 +38,6 @@ export default function Home() {
   };
 
   const handleSignIn = () => {
-    // Redirect to Cognito login page using your configured values.
     window.location.href =
       "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com/login" +
       "?client_id=4a8r52l7d5267hle2liar1nr6p" +

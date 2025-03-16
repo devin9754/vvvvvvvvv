@@ -3,7 +3,7 @@ import { Buffer } from "buffer";
 
 const COGNITO_DOMAIN = "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com";
 const CLIENT_ID = "4a8r52l7d5267hle2liar1nr6p";
-// Use your client secret from environment variables (or hard-code if necessary)
+// Use the secret from your environment variable (or fallback to the provided value)
 const CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET || "1f1k65mo3jmakcmjabtf40kvna6f5s9o0pg5aguni34fb9s0a141";
 const REDIRECT_URI = "https://digimodels.store/callback";
 

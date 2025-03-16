@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import AWS from "aws-sdk";
 
+// Cognito client using environment variables
 const cognito = new AWS.CognitoIdentityServiceProvider({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
@@ -9,15 +10,14 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
   },
 });
 
-// Use your actual user pool ID and the new group name "PaidMembers"
+// Use your actual user pool ID and update group name to "PaidMembers"
 const USER_POOL_ID = "us-east-1_LE1OnaNPP";
 const GROUP_NAME = "PaidMembers";
 
 export async function POST(request: Request) {
   try {
-    // Expect the client to send a JSON body containing the user’s email (which is used as the Cognito username)
     const body = await request.json();
-    const userEmail = body?.userEmail;
+    const userEmail = body?.userEmail; // Your client must send the actual Cognito username/email
     if (!userEmail) {
       return NextResponse.json({ success: false, error: "No user email provided" }, { status: 400 });
     }
