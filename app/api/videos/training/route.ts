@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 
-  // Look for the cognito:groups attribute
+  // Look for the "cognito:groups" attribute
   const groupAttr = userData.UserAttributes?.find(attr => attr.Name === "cognito:groups");
   if (!groupAttr?.Value) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     groupList = [groupAttr.Value];
   }
 
-  // Check that the user is in the "PaidMembers" group
+  // Check that the user is in the "PaidMembers" group (plural)
   if (!groupList.includes("PaidMembers")) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }

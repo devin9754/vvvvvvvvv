@@ -16,6 +16,16 @@ export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
 
+  // When the component mounts, check if the access token cookie is present.
+  // If not, force a redirect to home.
+  useEffect(() => {
+    const cookieString = document.cookie;
+    const hasToken = cookieString.split("; ").some(row => row.startsWith("access_token=") && row.split("=")[1] !== "");
+    if (!hasToken) {
+      window.location.href = "/";
+    }
+  }, []);
+
   // Load saved theme from localStorage on mount
   useEffect(() => {
     const storedThemeIndex = localStorage.getItem("themeIndex");
@@ -30,7 +40,7 @@ export default function DashboardClient() {
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // Fetch the private video from the API route
+  // Fetch the private video URL from the API route
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -58,12 +68,14 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
+          {/* Switch Theme Button (optional) */}
           <button
             onClick={() => setThemeIndex((prev) => (prev + 1) % THEMES.length)}
             className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
           >
             Switch Theme
           </button>
+          {/* Logout form using POST */}
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
@@ -127,7 +139,7 @@ export default function DashboardClient() {
           </nav>
         </aside>
 
-        {/* Main Content */}
+        {/* Main Dashboard Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
             {/* Welcome Section */}

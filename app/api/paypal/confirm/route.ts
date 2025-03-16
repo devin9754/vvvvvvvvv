@@ -16,7 +16,7 @@ const GROUP_NAME = "PaidMembers";
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const userEmail = body?.userEmail; // Ensure your client sends the actual Cognito username/email
+    const userEmail = body?.userEmail; // Your client must send the actual Cognito username/email
     if (!userEmail) {
       return NextResponse.json({ success: false, error: "No user email provided" }, { status: 400 });
     }

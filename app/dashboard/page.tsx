@@ -11,7 +11,7 @@ export default async function DashboardPage() {
   const token = cookieStore.get("access_token")?.value;
 
   if (!token) {
-    // If no access token cookie, redirect to home
+    // If no access token, redirect to home
     redirect("/");
   }
 
