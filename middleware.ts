@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
+  // Protect /dashboard or subpaths
   if (
     req.nextUrl.pathname === "/dashboard" ||
     req.nextUrl.pathname.startsWith("/dashboard/")
@@ -9,14 +10,14 @@ export function middleware(req: NextRequest) {
     const token = req.cookies.get("access_token");
     if (!token) {
       console.log("Middleware: No access token found, redirecting to home.");
-      const resp = NextResponse.redirect(new URL("/", req.url));
-      resp.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
-      return resp;
+      return NextResponse.redirect(new URL("/", req.url));
     }
   }
-  const resp = NextResponse.next();
-  resp.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
-  return resp;
+
+  // Force no-cache to prevent "back button" from resurrecting the page
+  const response = NextResponse.next();
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  return response;
 }
 
 export const config = {

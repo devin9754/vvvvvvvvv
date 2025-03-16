@@ -1,32 +1,33 @@
 import { NextResponse } from "next/server";
 import AWS from "aws-sdk";
 
+const COGNITO_REGION = process.env.AWS_REGION || "us-east-1";
+const USER_POOL_ID = "us-east-1_LE1OnaNPP"; // Your new user pool
+const GROUP_NAME = "PaidMembers"; // Must match exactly the group name in Cognito
+
 const cognito = new AWS.CognitoIdentityServiceProvider({
-  region: process.env.AWS_REGION_COGNITO || "us-east-1",
+  region: COGNITO_REGION,
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
   },
 });
 
-const USER_POOL_ID = "us-east-1_LE1OnaNPP";
-const GROUP_NAME = "PaidMembers";
-
 export async function POST(request: Request) {
   try {
-    // Example: read userEmail from request JSON
+    // You’d typically get userEmail from your PayPal IPN or from session
+    // This is just a naive example
     const body = await request.json();
-    const userEmail = body?.userEmail; // e.g. "someone@example.com"
-
+    const userEmail = body?.userEmail;
     if (!userEmail) {
       return NextResponse.json({ success: false, error: "No user email provided" }, { status: 400 });
     }
 
-    // Add them to PaidMembers group
+    // adminAddUserToGroup requires the Cognito username to match
     await cognito
       .adminAddUserToGroup({
         UserPoolId: USER_POOL_ID,
-        Username: userEmail,
+        Username: userEmail, // must be an actual user in that pool
         GroupName: GROUP_NAME,
       })
       .promise();

@@ -10,10 +10,11 @@ export default async function DashboardPage() {
   const cookieStore = cookies() as unknown as CookieStore;
   const token = cookieStore.get("access_token")?.value;
 
+  // If no token cookie, redirect to home
   if (!token) {
-    // If no cookie, go home
     redirect("/");
   }
-  // Otherwise, render the client
+
+  // Otherwise, render the client side dashboard
   return <DashboardClient />;
 }
