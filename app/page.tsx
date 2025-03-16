@@ -17,6 +17,7 @@ export default function Home() {
   const [themeIndex, setThemeIndex] = useState(0);
 
   useEffect(() => {
+    // Pick a random theme on mount
     const randomIndex = Math.floor(Math.random() * THEMES.length);
     setThemeIndex(randomIndex);
   }, []);
@@ -26,6 +27,7 @@ export default function Home() {
   };
 
   const handleSignIn = () => {
+    // Your Cognito login URL with your actual values:
     window.location.href =
       "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com/login" +
       "?client_id=4a8r52l7d5267hle2liar1nr6p" +

@@ -9,13 +9,14 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
   },
 });
 
+// Use your actual user pool ID and update group name to "PaidMembers"
 const USER_POOL_ID = "us-east-1_LE1OnaNPP";
-const GROUP_NAME = "PaidMember"; // Change to "PaidMembers" if that's your desired group name
+const GROUP_NAME = "PaidMembers";
 
 export async function POST(request: Request) {
   try {
     const body = await request.json();
-    const userEmail = body?.userEmail; // Make sure your client sends the user's email
+    const userEmail = body?.userEmail; // Ensure your client sends the actual Cognito username/email
     if (!userEmail) {
       return NextResponse.json({ success: false, error: "No user email provided" }, { status: 400 });
     }
@@ -23,7 +24,7 @@ export async function POST(request: Request) {
     await cognito
       .adminAddUserToGroup({
         UserPoolId: USER_POOL_ID,
-        Username: userEmail, // Must match the actual Cognito username
+        Username: userEmail,
         GroupName: GROUP_NAME,
       })
       .promise();

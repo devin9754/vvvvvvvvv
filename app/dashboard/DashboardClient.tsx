@@ -30,7 +30,7 @@ export default function DashboardClient() {
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // Fetch the private video from your API route
+  // Fetch the private video from the API route
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -58,7 +58,12 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
-          {/* Logout form using POST */}
+          <button
+            onClick={() => setThemeIndex((prev) => (prev + 1) % THEMES.length)}
+            className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
+          >
+            Switch Theme
+          </button>
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
@@ -122,7 +127,7 @@ export default function DashboardClient() {
           </nav>
         </aside>
 
-        {/* Main Dashboard Content */}
+        {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
             {/* Welcome Section */}
