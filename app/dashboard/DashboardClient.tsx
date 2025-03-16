@@ -16,16 +16,6 @@ export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
 
-  // When the component mounts, check if the access token cookie is present.
-  // If not, force a redirect to home.
-  useEffect(() => {
-    const cookieString = document.cookie;
-    const hasToken = cookieString.split("; ").some(row => row.startsWith("access_token=") && row.split("=")[1] !== "");
-    if (!hasToken) {
-      window.location.href = "/";
-    }
-  }, []);
-
   // Load saved theme from localStorage on mount
   useEffect(() => {
     const storedThemeIndex = localStorage.getItem("themeIndex");
@@ -68,7 +58,7 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
-          {/* Switch Theme Button (optional) */}
+          {/* Optional: Switch theme button */}
           <button
             onClick={() => setThemeIndex((prev) => (prev + 1) % THEMES.length)}
             className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
@@ -139,7 +129,7 @@ export default function DashboardClient() {
           </nav>
         </aside>
 
-        {/* Main Dashboard Content */}
+        {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
             {/* Welcome Section */}
@@ -154,9 +144,7 @@ export default function DashboardClient() {
 
             {/* Load Private Video Section */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Access Premium Training Video
-              </h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Access Premium Training Video</h3>
               <p className="text-gray-600 mb-4">
                 Tap the button below to load your exclusive video course.
               </p>

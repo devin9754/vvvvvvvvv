@@ -30,10 +30,7 @@ export default function PayPalButton() {
             cursor: "pointer",
           }}
         />
-        <img
-          src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg"
-          alt="cards"
-        />
+        <img src="https://www.paypalobjects.com/images/Debit_Credit_APM.svg" alt="cards" />
       </form>
     </div>
   );

@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import AWS from "aws-sdk";
 
+// Cognito client using environment variables
 const cognito = new AWS.CognitoIdentityServiceProvider({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
