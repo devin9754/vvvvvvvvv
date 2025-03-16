@@ -2,7 +2,6 @@
 
 import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
 import PayPalButton from "./PayPalButton";
 
 const THEMES = [
@@ -16,7 +15,6 @@ const THEMES = [
 export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
-  const router = useRouter();
 
   // Load saved theme from localStorage on mount
   useEffect(() => {
@@ -26,7 +24,6 @@ export default function DashboardClient() {
     }
   }, []);
 
-  // Dropdown handler for theme selection
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newIndex = parseInt(e.target.value, 10);
     setThemeIndex(newIndex);
@@ -50,21 +47,6 @@ export default function DashboardClient() {
       });
   };
 
-  // Client-side logout handler: call the POST logout route and force a page reload
-  const handleLogout = async () => {
-    try {
-      const res = await fetch("/api/auth/logout", { method: "POST" });
-      if (res.ok) {
-        // Force a full reload so the server-side redirect takes effect
-        window.location.replace("https://digimodels.store/");
-      } else {
-        console.error("Logout failed:", res.statusText);
-      }
-    } catch (error) {
-      console.error("Logout error:", error);
-    }
-  };
-
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -76,18 +58,22 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
+          {/* Optional: Switch theme button */}
           <button
             onClick={() => setThemeIndex((prev) => (prev + 1) % THEMES.length)}
             className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
           >
             Switch Theme
           </button>
-          <button
-            onClick={handleLogout}
-            className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
-          >
-            Log Out
-          </button>
+          {/* Logout form using POST */}
+          <form action="https://digimodels.store/api/auth/logout" method="POST">
+            <button
+              type="submit"
+              className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
+            >
+              Log Out
+            </button>
+          </form>
         </div>
       </header>
 

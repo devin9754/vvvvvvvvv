@@ -3,7 +3,7 @@ import AWS from "aws-sdk";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-// Initialize Cognito client using env variables
+// Cognito client using environment variables
 const cognito = new AWS.CognitoIdentityServiceProvider({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
@@ -12,7 +12,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
   },
 });
 
-// Initialize S3 client for your bucket region (N. California)
+// S3 client for generating signed URLs (bucket region: us-west-1)
 const s3 = new S3Client({
   region: "us-west-1",
   credentials: {
@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 
-  // Find the "cognito:groups" attribute
+  // Look for the "cognito:groups" attribute
   const groupAttr = userData.UserAttributes?.find(attr => attr.Name === "cognito:groups");
   if (!groupAttr?.Value) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
     groupList = [groupAttr.Value];
   }
 
-  // Check for "PaidMembers" group (note the plural)
+  // Check that the user is in the "PaidMembers" group (plural)
   if (!groupList.includes("PaidMembers")) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
