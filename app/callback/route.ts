@@ -47,7 +47,7 @@ export async function GET(request: Request) {
       httpOnly: true,
       secure: true,
       sameSite: "lax",
-      maxAge: 60 * 60 * 24 * 7,
+      maxAge: 60 * 60 * 24 * 7, // 7 days
     });
     return response;
   } catch (error) {
