@@ -3,7 +3,7 @@ import AWS from "aws-sdk";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-// Cognito client using environment variables
+// Initialize Cognito client using env variables
 const cognito = new AWS.CognitoIdentityServiceProvider({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
@@ -12,7 +12,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
   },
 });
 
-// S3 client for generating signed URLs (bucket region: us-west-1)
+// Initialize S3 client (bucket is in us-west-1)
 const s3 = new S3Client({
   region: "us-west-1",
   credentials: {
@@ -39,7 +39,7 @@ export async function GET(request: NextRequest) {
   }
 
   // Look for the "cognito:groups" attribute
-  const groupAttr = userData.UserAttributes?.find(attr => attr.Name === "cognito:groups");
+  const groupAttr = userData.UserAttributes?.find(a => a.Name === "cognito:groups");
   if (!groupAttr?.Value) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
