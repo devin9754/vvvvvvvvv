@@ -1,27 +1,28 @@
 import { NextResponse } from "next/server";
 import AWS from "aws-sdk";
 
-// Cognito client using environment variables
 const cognito = new AWS.CognitoIdentityServiceProvider({
-  region: process.env.AWS_REGION || "us-east-1",
+  region: process.env.AWS_REGION_COGNITO || "us-east-1",
   credentials: {
     accessKeyId: process.env.AWS_ACCESS_KEY_ID || "",
     secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY || "",
   },
 });
 
-// Use your actual user pool ID and update group name to "PaidMembers"
 const USER_POOL_ID = "us-east-1_LE1OnaNPP";
 const GROUP_NAME = "PaidMembers";
 
 export async function POST(request: Request) {
   try {
+    // Example: read userEmail from request JSON
     const body = await request.json();
-    const userEmail = body?.userEmail; // Your client must send the actual Cognito username/email
+    const userEmail = body?.userEmail; // e.g. "someone@example.com"
+
     if (!userEmail) {
       return NextResponse.json({ success: false, error: "No user email provided" }, { status: 400 });
     }
 
+    // Add them to PaidMembers group
     await cognito
       .adminAddUserToGroup({
         UserPoolId: USER_POOL_ID,
@@ -31,7 +32,7 @@ export async function POST(request: Request) {
       .promise();
 
     return NextResponse.json({ success: true });
-  } catch (error: unknown) {
+  } catch (error) {
     let errorMessage = "Unknown error";
     if (error instanceof Error) {
       errorMessage = error.message;

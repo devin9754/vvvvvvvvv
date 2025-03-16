@@ -9,14 +9,14 @@ export function middleware(req: NextRequest) {
     const token = req.cookies.get("access_token");
     if (!token) {
       console.log("Middleware: No access token found, redirecting to home.");
-      const response = NextResponse.redirect(new URL("/", req.url));
-      response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
-      return response;
+      const resp = NextResponse.redirect(new URL("/", req.url));
+      resp.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+      return resp;
     }
   }
-  const response = NextResponse.next();
-  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
-  return response;
+  const resp = NextResponse.next();
+  resp.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  return resp;
 }
 
 export const config = {

@@ -16,21 +16,19 @@ export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
 
-  // Load saved theme from localStorage on mount
+  // On mount, load any stored theme
   useEffect(() => {
-    const storedThemeIndex = localStorage.getItem("themeIndex");
-    if (storedThemeIndex !== null) {
-      setThemeIndex(parseInt(storedThemeIndex, 10));
-    }
+    const stored = localStorage.getItem("themeIndex");
+    if (stored) setThemeIndex(parseInt(stored, 10));
   }, []);
 
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const newIndex = parseInt(e.target.value, 10);
-    setThemeIndex(newIndex);
-    localStorage.setItem("themeIndex", newIndex.toString());
+    const idx = parseInt(e.target.value, 10);
+    setThemeIndex(idx);
+    localStorage.setItem("themeIndex", idx.toString());
   };
 
-  // Fetch the private video URL from the API route
+  // Fetch the presigned URL from /api/videos/training
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -54,18 +52,9 @@ export default function DashboardClient() {
       transition={{ duration: 0.8 }}
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col transition-colors duration-500`}
     >
-      {/* Top Navigation */}
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
-        <div className="flex items-center gap-4">
-          {/* Optional: Switch theme button */}
-          <button
-            onClick={() => setThemeIndex((prev) => (prev + 1) % THEMES.length)}
-            className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
-          >
-            Switch Theme
-          </button>
-          {/* Logout form using POST */}
+        <div>
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
@@ -77,7 +66,7 @@ export default function DashboardClient() {
         </div>
       </header>
 
-      {/* Hero Video Section */}
+      {/* Example hero video */}
       <section className="py-4">
         <div className="relative w-full max-w-5xl mx-auto px-4">
           <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
@@ -94,12 +83,10 @@ export default function DashboardClient() {
         </div>
       </section>
 
-      {/* Purchase Access Section */}
+      {/* Purchase Access */}
       <section className="py-6">
-        <div className="max-w-5xl mx-auto text-center space-y-4 backdrop-blur-sm">
-          <h2 className="text-2xl font-bold text-purple-700">
-            Purchase Access to Exclusive Videos
-          </h2>
+        <div className="max-w-5xl mx-auto text-center space-y-4">
+          <h2 className="text-2xl font-bold text-purple-700">Purchase Access to Exclusive Videos</h2>
           <p className="text-gray-700">
             Click below to pay and unlock private AWS S3–hosted video courses.
           </p>
@@ -108,46 +95,37 @@ export default function DashboardClient() {
       </section>
 
       <div className="flex flex-1 overflow-hidden mt-4 px-4">
-        {/* Sidebar */}
         <aside className="hidden md:flex flex-col w-64 border-r border-gray-200 p-4 mr-4 rounded-xl shadow-md">
+          {/* Your sidebar links */}
           <nav className="flex flex-col space-y-2">
-            <a href="/dashboard/overview" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+            <a href="/dashboard/overview" className="px-3 py-2 hover:bg-gray-100 rounded text-gray-700 font-medium">
               Overview
             </a>
-            <a href="/dashboard/recent-activity" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+            <a href="/dashboard/recent-activity" className="px-3 py-2 hover:bg-gray-100 rounded text-gray-700 font-medium">
               Recent Activity
             </a>
-            <a href="/dashboard/courses" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+            <a href="/dashboard/courses" className="px-3 py-2 hover:bg-gray-100 rounded text-gray-700 font-medium">
               Courses
             </a>
-            <a href="/dashboard/settings" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
+            <a href="/dashboard/settings" className="px-3 py-2 hover:bg-gray-100 rounded text-gray-700 font-medium">
               Settings
-            </a>
-            <a href="/dashboard/announcements" className="px-3 py-2 rounded hover:bg-gray-100 text-gray-700 font-medium">
-              Announcements
             </a>
           </nav>
         </aside>
 
-        {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
-            {/* Welcome Section */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                Welcome to Your Dashboard
-              </h2>
+            <div className="p-5 rounded-xl shadow-md border border-gray-300">
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Your Dashboard</h2>
               <p className="text-gray-600">
                 This content is protected. Explore your recent activity and exclusive content below.
               </p>
             </div>
 
-            {/* Load Private Video Section */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
+            {/* Private Video Section */}
+            <div className="p-5 rounded-xl shadow-md border border-gray-300">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Access Premium Training Video</h3>
-              <p className="text-gray-600 mb-4">
-                Tap the button below to load your exclusive video course.
-              </p>
+              <p className="text-gray-600 mb-4">Tap the button below to load your exclusive video course.</p>
               <button
                 onClick={handleLoadVideo}
                 className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold px-6 py-3 rounded-full shadow-xl transform hover:scale-105 transition"
@@ -156,13 +134,18 @@ export default function DashboardClient() {
               </button>
               {videoUrl && (
                 <div className="mt-4">
-                  <video src={videoUrl} controls autoPlay className="w-full rounded-md shadow-md" />
+                  <video
+                    src={videoUrl}
+                    controls
+                    autoPlay
+                    className="w-full rounded-md shadow-md"
+                  />
                 </div>
               )}
             </div>
 
-            {/* Theme Selection Section */}
-            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
+            {/* Theme Selection */}
+            <div className="p-5 rounded-xl shadow-md border border-gray-300">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Theme Selection</h3>
               <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
               <select
