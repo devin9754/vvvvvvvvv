@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import AWS from "aws-sdk";
 
-// Cognito client using environment variables
 const cognito = new AWS.CognitoIdentityServiceProvider({
   region: process.env.AWS_REGION || "us-east-1",
   credentials: {
@@ -10,7 +9,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
   },
 });
 
-// Use your actual user pool ID and update group name to "PaidMembers"
+// Use your actual user pool ID and update the group name to "PaidMembers"
 const USER_POOL_ID = "us-east-1_LE1OnaNPP";
 const GROUP_NAME = "PaidMembers";
 
