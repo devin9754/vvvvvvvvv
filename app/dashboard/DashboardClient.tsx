@@ -2,6 +2,7 @@
 
 import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import PayPalButton from "./PayPalButton";
 
 const THEMES = [
@@ -15,6 +16,7 @@ const THEMES = [
 export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
+  const router = useRouter();
 
   // Load saved theme from localStorage on mount
   useEffect(() => {
@@ -30,7 +32,7 @@ export default function DashboardClient() {
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // Fetch the private video from your API route
+  // Load private video via API
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -47,6 +49,21 @@ export default function DashboardClient() {
       });
   };
 
+  // Logout handler: call the logout API and then force reload
+  const handleLogout = async () => {
+    try {
+      const res = await fetch("/api/auth/logout", { method: "POST" });
+      if (res.ok) {
+        // Force a reload; middleware will detect missing token and redirect
+        router.reload();
+      } else {
+        console.error("Logout failed:", res.statusText);
+      }
+    } catch (error) {
+      console.error("Logout error:", error);
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -58,15 +75,18 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
-          {/* Logout form using POST */}
-          <form action="https://digimodels.store/api/auth/logout" method="POST">
-            <button
-              type="submit"
-              className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
-            >
-              Log Out
-            </button>
-          </form>
+          <button
+            onClick={() => setThemeIndex((prev) => (prev + 1) % THEMES.length)}
+            className="bg-purple-100 text-purple-700 px-4 py-2 rounded-md border border-purple-300 hover:bg-purple-50 transition"
+          >
+            Switch Theme
+          </button>
+          <button
+            onClick={handleLogout}
+            className="bg-gradient-to-r from-pink-300 to-fuchsia-400 text-white px-5 py-2 rounded-md shadow-md hover:scale-105 transform transition"
+          >
+            Log Out
+          </button>
         </div>
       </header>
 
@@ -122,14 +142,12 @@ export default function DashboardClient() {
           </nav>
         </aside>
 
-        {/* Main Dashboard Content */}
+        {/* Main Content */}
         <div className="flex-1 overflow-y-auto">
           <div className="max-w-6xl mx-auto space-y-6">
             {/* Welcome Section */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h2 className="text-3xl font-bold text-gray-900 mb-2">
-                Welcome to Your Dashboard
-              </h2>
+              <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Your Dashboard</h2>
               <p className="text-gray-600">
                 This content is protected. Explore your recent activity and exclusive content below.
               </p>
@@ -137,9 +155,7 @@ export default function DashboardClient() {
 
             {/* Load Private Video Section */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">
-                Access Premium Training Video
-              </h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">Access Premium Training Video</h3>
               <p className="text-gray-600 mb-4">
                 Tap the button below to load your exclusive video course.
               </p>
@@ -156,7 +172,7 @@ export default function DashboardClient() {
               )}
             </div>
 
-            {/* Theme Selection Section */}
+            {/* Theme Selection */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">Theme Selection</h3>
               <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
