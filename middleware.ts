@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 
 export function middleware(req: NextRequest) {
-  // If user tries /dashboard or subpaths
+  // Protect /dashboard or subpaths
   if (
     req.nextUrl.pathname === "/dashboard" ||
     req.nextUrl.pathname.startsWith("/dashboard/")
@@ -14,7 +14,7 @@ export function middleware(req: NextRequest) {
     }
   }
 
-  // Force no-cache to avoid back button
+  // Force no-cache so that the browser doesn’t keep the dashboard in memory
   const response = NextResponse.next();
   response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
   return response;

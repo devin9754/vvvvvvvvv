@@ -25,30 +25,43 @@ export default function DashboardClient() {
     }
   }, []);
 
-  // 2) Let’s implement a 10-minute auto-logout timer:
+  // 2) Immediately verify token in case user hit "back" from home after logout
   useEffect(() => {
-    // 10 minutes = 600,000 ms
+    fetch("/api/auth/verify")
+      .then((res) => {
+        if (!res.ok) {
+          // If 401, forcibly redirect to home
+          window.location.href = "/";
+        }
+      })
+      .catch(() => {
+        window.location.href = "/";
+      });
+  }, []);
+
+  // 3) Ten-minute auto-logout timer
+  useEffect(() => {
     const timer = setTimeout(() => {
       // Attempt to logout by calling the logout route (POST)
       fetch("/api/auth/logout", { method: "POST" })
         .then(() => {
-          // Force a reload so that the user is kicked out
+          // Force a reload so user is kicked out
           window.location.reload();
         })
         .catch((err) => console.error("Auto-logout error:", err));
-    }, 600_000);
+    }, 600_000); // 10 min in ms
 
     return () => clearTimeout(timer);
   }, []);
 
-  // 3) Theme selection
+  // 4) Theme selection
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newIndex = parseInt(e.target.value, 10);
     setThemeIndex(newIndex);
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // 4) If you want to load a private video (S3):
+  // 5) Load private video from /api/videos/training
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -76,7 +89,7 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
-          {/* Logout form using POST */}
+          {/* Manual logout button => POST */}
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
