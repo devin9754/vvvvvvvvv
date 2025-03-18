@@ -5,15 +5,31 @@ import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
 // Example public link to a video in your bucket (currently set public for MVP).
-const PUBLIC_VIDEO_URL = "https://digimodels-members.s3.us-west-1.amazonaws.com/EPD_Short_Reels_03.mp4";
+const PUBLIC_VIDEO_URL =
+  "https://digimodels-members.s3.us-west-1.amazonaws.com/EPD_Short_Reels_03.mp4";
 
 // Pastel theme definitions:
 const THEMES = [
-  { name: "Pastel Pink", class: "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100" },
-  { name: "Blue Neon", class: "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100" },
-  { name: "Green Light", class: "bg-gradient-to-br from-lime-100 via-green-50 to-teal-100" },
-  { name: "Fuchsia Mix", class: "bg-gradient-to-br from-fuchsia-100 via-pink-100 to-rose-100" },
-  { name: "Yellow Orange", class: "bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-100" },
+  {
+    name: "Pastel Pink",
+    class: "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100",
+  },
+  {
+    name: "Blue Neon",
+    class: "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100",
+  },
+  {
+    name: "Green Light",
+    class: "bg-gradient-to-br from-lime-100 via-green-50 to-teal-100",
+  },
+  {
+    name: "Fuchsia Mix",
+    class: "bg-gradient-to-br from-fuchsia-100 via-pink-100 to-rose-100",
+  },
+  {
+    name: "Yellow Orange",
+    class: "bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-100",
+  },
 ];
 
 export default function DashboardClient() {
@@ -66,7 +82,9 @@ export default function DashboardClient() {
     >
       {/* Top Navigation */}
       <header className="flex items-center justify-between p-4">
-        <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard (MVP)</h1>
+        <h1 className="text-xl font-bold text-gray-700">
+          DigiModels Dashboard (MVP)
+        </h1>
         {/* Logout form → POST to clear cookie */}
         <form action="https://digimodels.store/api/auth/logout" method="POST">
           <button
@@ -80,18 +98,16 @@ export default function DashboardClient() {
 
       {/* Example "hero" video (public) */}
       <section className="py-4">
-        <div className="relative w-full max-w-5xl mx-auto px-4">
-          <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
-            <video
-              className="absolute top-0 left-0 w-full h-full object-cover"
-              controls
-              autoPlay
-              muted
-              loop
-              playsInline
-              src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
-            />
-          </div>
+        <div className="relative w-full max-w-2xl mx-auto px-4">
+          <video
+            className="w-full rounded-xl shadow-lg border border-purple-200/50 object-contain"
+            controls
+            autoPlay
+            muted
+            loop
+            playsInline
+            src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
+          />
         </div>
       </section>
 
@@ -113,10 +129,30 @@ export default function DashboardClient() {
         {/* Sidebar */}
         <aside className="hidden md:flex flex-col w-64 border-r border-gray-200 p-4 mr-4 rounded-xl shadow-md">
           <nav className="flex flex-col space-y-2 text-gray-700">
-            <a href="/dashboard/overview" className="px-3 py-2 rounded hover:bg-gray-100">Overview</a>
-            <a href="/dashboard/recent-activity" className="px-3 py-2 rounded hover:bg-gray-100">Recent Activity</a>
-            <a href="/dashboard/courses" className="px-3 py-2 rounded hover:bg-gray-100">Courses</a>
-            <a href="/dashboard/settings" className="px-3 py-2 rounded hover:bg-gray-100">Settings</a>
+            <a
+              href="/dashboard/overview"
+              className="px-3 py-2 rounded hover:bg-gray-100"
+            >
+              Overview
+            </a>
+            <a
+              href="/dashboard/recent-activity"
+              className="px-3 py-2 rounded hover:bg-gray-100"
+            >
+              Recent Activity
+            </a>
+            <a
+              href="/dashboard/courses"
+              className="px-3 py-2 rounded hover:bg-gray-100"
+            >
+              Courses
+            </a>
+            <a
+              href="/dashboard/settings"
+              className="px-3 py-2 rounded hover:bg-gray-100"
+            >
+              Settings
+            </a>
           </nav>
         </aside>
 
@@ -124,9 +160,12 @@ export default function DashboardClient() {
         <div className="flex-1 overflow-y-auto max-w-6xl mx-auto space-y-6">
           {/* Intro Card */}
           <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-            <h2 className="text-3xl font-bold text-gray-900 mb-2">Welcome to Your Dashboard</h2>
+            <h2 className="text-3xl font-bold text-gray-900 mb-2">
+              Welcome to Your Dashboard
+            </h2>
             <p className="text-gray-600">
-              This content is protected. Explore your recent activity and exclusive content below.
+              This content is protected. Explore your recent activity and
+              exclusive content below.
             </p>
           </div>
 
@@ -136,7 +175,8 @@ export default function DashboardClient() {
               Access Premium Training Video (MVP)
             </h3>
             <p className="text-gray-600 mb-4">
-              Click the button to reveal a publicly accessible video (S3 bucket made public).
+              Click the button to reveal a publicly accessible video (S3 bucket
+              made public).
             </p>
             {!showPaidVideo && (
               <button
@@ -160,7 +200,9 @@ export default function DashboardClient() {
 
           {/* Theme Selection */}
           <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-            <h3 className="text-xl font-semibold text-gray-800 mb-2">Theme Selection</h3>
+            <h3 className="text-xl font-semibold text-gray-800 mb-2">
+              Theme Selection
+            </h3>
             <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
             <select
               aria-label="Theme Selection"
