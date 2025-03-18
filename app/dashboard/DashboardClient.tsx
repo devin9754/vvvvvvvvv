@@ -98,7 +98,7 @@ export default function DashboardClient() {
 
       {/* Example "hero" video (public) */}
       <section className="py-4">
-        <div className="relative w-full max-w-2xl mx-auto px-4">
+        <div className="relative w-full max-w-xl mx-auto px-4">
           <video
             className="w-full rounded-xl shadow-lg border border-purple-200/50 object-contain"
             controls
@@ -187,12 +187,12 @@ export default function DashboardClient() {
               </button>
             )}
             {showPaidVideo && (
-              <div className="mt-4">
+              <div className="mt-4 w-full max-w-md mx-auto">
                 <video
                   src={PUBLIC_VIDEO_URL}
                   controls
                   autoPlay
-                  className="w-full rounded-md shadow-md"
+                  className="w-full rounded-md shadow-md object-contain"
                 />
               </div>
             )}
@@ -203,7 +203,9 @@ export default function DashboardClient() {
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               Theme Selection
             </h3>
-            <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
+            <p className="text-gray-600 mb-2">
+              Pick your favorite pastel style:
+            </p>
             <select
               aria-label="Theme Selection"
               value={themeIndex}
