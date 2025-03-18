@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
-// Pastel theme array
 const THEMES = [
   { name: "Pastel Pink", class: "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100" },
   { name: "Blue Neon", class: "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100" },
@@ -17,51 +16,40 @@ export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
 
-  // 1) On mount, load theme from localStorage
+  // Load saved theme from localStorage on mount
   useEffect(() => {
     const storedThemeIndex = localStorage.getItem("themeIndex");
     if (storedThemeIndex !== null) {
       setThemeIndex(parseInt(storedThemeIndex, 10));
     }
+
+    // Push a new history state and reload on popstate (back button)
+    window.history.pushState(null, "", window.location.href);
+    window.onpopstate = () => {
+      // Force a full reload which triggers the server check (and thus redirects to home if no token)
+      window.location.reload();
+    };
   }, []);
 
-  // 2) Immediately verify token in case user hit "back" from home after logout
-  useEffect(() => {
-    fetch("/api/auth/verify")
-      .then((res) => {
-        if (!res.ok) {
-          // If 401, forcibly redirect to home
-          window.location.href = "/";
-        }
-      })
-      .catch(() => {
-        window.location.href = "/";
-      });
-  }, []);
-
-  // 3) Ten-minute auto-logout timer
+  // Auto-logout after 10 minutes (600,000 ms)
   useEffect(() => {
     const timer = setTimeout(() => {
-      // Attempt to logout by calling the logout route (POST)
+      // Call the logout route (POST) and then force a reload
       fetch("/api/auth/logout", { method: "POST" })
-        .then(() => {
-          // Force a reload so user is kicked out
-          window.location.reload();
-        })
+        .then(() => window.location.reload())
         .catch((err) => console.error("Auto-logout error:", err));
-    }, 600_000); // 10 min in ms
+    }, 600_000); // 10 minutes
 
     return () => clearTimeout(timer);
   }, []);
 
-  // 4) Theme selection
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newIndex = parseInt(e.target.value, 10);
     setThemeIndex(newIndex);
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // 5) Load private video from /api/videos/training
+  // Load private video by calling the API route
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -89,7 +77,7 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
-          {/* Manual logout button => POST */}
+          {/* Logout form using POST */}
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
@@ -101,7 +89,7 @@ export default function DashboardClient() {
         </div>
       </header>
 
-      {/* Example public hero video */}
+      {/* Hero Video Section (public video) */}
       <section className="py-4">
         <div className="relative w-full max-w-5xl mx-auto px-4">
           <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
@@ -166,7 +154,7 @@ export default function DashboardClient() {
               </p>
             </div>
 
-            {/* Load Private Video Section (optional) */}
+            {/* Load Private Video Section */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 Access Premium Training Video

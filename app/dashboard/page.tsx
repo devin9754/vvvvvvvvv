@@ -9,12 +9,8 @@ type CookieStore = {
 export default async function DashboardPage() {
   const cookieStore = cookies() as unknown as CookieStore;
   const token = cookieStore.get("access_token")?.value;
-
-  // If no token, redirect to home
   if (!token) {
     redirect("/");
   }
-
-  // Otherwise, render the client
   return <DashboardClient />;
 }

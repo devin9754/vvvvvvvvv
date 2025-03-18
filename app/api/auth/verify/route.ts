@@ -1,12 +1,18 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export async function GET(request: NextRequest) {
-  const token = request.cookies.get("access_token")?.value;
-  if (!token) {
-    return NextResponse.json({ error: "No valid token" }, { status: 401 });
-  }
-  // Optionally call Cognito to verify if you want deeper checks:
-  // e.g. await cognito.getUser({ AccessToken: token }).promise();
+export async function GET() {
+  console.log("Logout GET triggered");
+  const response = NextResponse.redirect("https://digimodels.store/");
+  response.cookies.set("access_token", "", { path: "/", maxAge: 0 });
+  // Set no-cache headers to force reload
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  return response;
+}
 
-  return NextResponse.json({ success: true });
+export async function POST() {
+  console.log("Logout POST triggered");
+  const response = NextResponse.redirect("https://digimodels.store/");
+  response.cookies.set("access_token", "", { path: "/", maxAge: 0 });
+  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
+  return response;
 }
