@@ -14,16 +14,10 @@ const THEMES = [
   { name: "Yellow Orange", class: "bg-gradient-to-r from-yellow-100 via-amber-50 to-orange-100" },
 ];
 
-// Cognito details
-//  - user pool: bqh6-2 => us-east-1_LE1OnaNPP
-//  - domain:    us-east-1le1onanpp.auth.us-east-1.amazoncognito.com
-//  - client_id: 4a8r52l7d5267hle2liar1nr6p
-//  - callback:  https://digimodels.store/callback
-
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(0);
 
-  // Random theme on mount
+  // Pick a random theme on mount
   useEffect(() => {
     const randomIndex = Math.floor(Math.random() * THEMES.length);
     setThemeIndex(randomIndex);
@@ -45,7 +39,7 @@ export default function Home() {
   };
 
   const handleSignIn = () => {
-    // Update these to your actual domain + client_id + callback
+    // Replace with your Cognito domain, client_id, callback, etc.
     window.location.href =
       "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com/login" +
       "?client_id=4a8r52l7d5267hle2liar1nr6p" +

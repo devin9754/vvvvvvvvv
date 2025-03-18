@@ -17,7 +17,7 @@ export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
   const [videoUrl, setVideoUrl] = useState("");
 
-  // On mount, load saved theme from localStorage
+  // 1) On mount, load theme from localStorage
   useEffect(() => {
     const storedThemeIndex = localStorage.getItem("themeIndex");
     if (storedThemeIndex !== null) {
@@ -25,14 +25,30 @@ export default function DashboardClient() {
     }
   }, []);
 
-  // When user picks a new theme, store in localStorage
+  // 2) Let’s implement a 10-minute auto-logout timer:
+  useEffect(() => {
+    // 10 minutes = 600,000 ms
+    const timer = setTimeout(() => {
+      // Attempt to logout by calling the logout route (POST)
+      fetch("/api/auth/logout", { method: "POST" })
+        .then(() => {
+          // Force a reload so that the user is kicked out
+          window.location.reload();
+        })
+        .catch((err) => console.error("Auto-logout error:", err));
+    }, 600_000);
+
+    return () => clearTimeout(timer);
+  }, []);
+
+  // 3) Theme selection
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newIndex = parseInt(e.target.value, 10);
     setThemeIndex(newIndex);
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
-  // Call our private video route
+  // 4) If you want to load a private video (S3):
   const handleLoadVideo = () => {
     fetch("/api/videos/training")
       .then((res) => res.json())
@@ -60,6 +76,7 @@ export default function DashboardClient() {
       <header className="flex items-center justify-between p-4">
         <h1 className="text-xl font-bold text-gray-700">DigiModels Dashboard</h1>
         <div className="flex items-center gap-4">
+          {/* Logout form using POST */}
           <form action="https://digimodels.store/api/auth/logout" method="POST">
             <button
               type="submit"
@@ -71,7 +88,7 @@ export default function DashboardClient() {
         </div>
       </header>
 
-      {/* Example hero video (public) */}
+      {/* Example public hero video */}
       <section className="py-4">
         <div className="relative w-full max-w-5xl mx-auto px-4">
           <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
@@ -136,7 +153,7 @@ export default function DashboardClient() {
               </p>
             </div>
 
-            {/* Load Private Video Section */}
+            {/* Load Private Video Section (optional) */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 Access Premium Training Video

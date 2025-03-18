@@ -1,6 +1,5 @@
 import { NextResponse } from "next/server";
 
-// We handle both GET and POST for logout
 export async function GET() {
   console.log("Logout GET triggered");
   const response = NextResponse.redirect("https://digimodels.store/");
