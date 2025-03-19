@@ -5,48 +5,67 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-// Inline CookieBanner component (you can also move this to its own file)
-function CookieBanner() {
-  const [showBanner, setShowBanner] = useState(false);
+// A full-screen overlay that forces cookie consent decision
+function BlockingCookieOverlay() {
+  const [showOverlay, setShowOverlay] = useState(false);
 
   useEffect(() => {
     const userChoice = localStorage.getItem("userCookieConsent");
     if (!userChoice) {
-      // No choice yet → show banner
-      setShowBanner(true);
+      // If no choice made, show overlay
+      setShowOverlay(true);
+      // Optionally, disable scrolling on body
+      document.body.style.overflow = "hidden";
     }
   }, []);
 
   const handleAccept = () => {
     localStorage.setItem("userCookieConsent", "accepted");
-    setShowBanner(false);
+    setShowOverlay(false);
+    document.body.style.overflow = "auto"; // restore scrolling
   };
 
   const handleDeny = () => {
     localStorage.setItem("userCookieConsent", "denied");
-    setShowBanner(false);
+    setShowOverlay(false);
+    document.body.style.overflow = "auto"; // restore scrolling
   };
 
-  if (!showBanner) return null;
+  if (!showOverlay) return null;
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 bg-gray-800 text-white p-4 z-50 flex flex-col sm:flex-row justify-between items-center space-y-2 sm:space-y-0">
-      <p className="text-sm">
-        We use cookies for authentication and other essential features. Please accept to continue.
-      </p>
-      <div className="flex space-x-2">
-        <button
-          onClick={handleAccept}
-          className="bg-green-500 hover:bg-green-600 text-white px-3 py-1 rounded"
-        >
-          Accept All
-        </button>
-        <button
-          onClick={handleDeny}
-          className="bg-red-500 hover:bg-red-600 text-white px-3 py-1 rounded"
-        >
-          Deny
-        </button>
+    <div
+      className="
+        fixed inset-0 
+        bg-black/70 
+        z-50
+        flex 
+        items-center 
+        justify-center
+      "
+    >
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 text-center space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          We Value Your Privacy
+        </h2>
+        <p className="text-gray-600">
+          We use cookies for authentication and other essential features.
+          Please accept or deny before proceeding.
+        </p>
+        <div className="flex justify-center space-x-4 pt-4">
+          <button
+            onClick={handleAccept}
+            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+          >
+            Accept
+          </button>
+          <button
+            onClick={handleDeny}
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+          >
+            Deny
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -54,31 +73,15 @@ function CookieBanner() {
 
 // Pastel theme definitions
 const THEMES = [
-  {
-    name: "Pastel Pink",
-    class: "bg-gradient-to-r from-pink-100 via-rose-50 to-purple-100",
-  },
-  {
-    name: "Blue Neon",
-    class: "bg-gradient-to-r from-blue-100 via-sky-100 to-cyan-100",
-  },
-  {
-    name: "Green Light",
-    class: "bg-gradient-to-r from-lime-100 via-green-50 to-teal-100",
-  },
-  {
-    name: "Fuchsia Mix",
-    class: "bg-gradient-to-r from-fuchsia-100 via-pink-100 to-rose-100",
-  },
-  {
-    name: "Yellow Orange",
-    class: "bg-gradient-to-r from-yellow-100 via-amber-50 to-orange-100",
-  },
+  { name: "Pastel Pink", class: "bg-gradient-to-r from-pink-100 via-rose-50 to-purple-100" },
+  { name: "Blue Neon", class: "bg-gradient-to-r from-blue-100 via-sky-100 to-cyan-100" },
+  { name: "Green Light", class: "bg-gradient-to-r from-lime-100 via-green-50 to-teal-100" },
+  { name: "Fuchsia Mix", class: "bg-gradient-to-r from-fuchsia-100 via-pink-100 to-rose-100" },
+  { name: "Yellow Orange", class: "bg-gradient-to-r from-yellow-100 via-amber-50 to-orange-100" },
 ];
 
 export default function Home() {
   const [themeIndex, setThemeIndex] = useState(0);
-  const [canSignIn, setCanSignIn] = useState(true);
 
   // Pick a random theme on mount
   useEffect(() => {
@@ -97,25 +100,17 @@ export default function Home() {
     return () => window.removeEventListener("pageshow", handlePageShow);
   }, []);
 
-  // Check if user has denied cookies
-  useEffect(() => {
-    const userChoice = localStorage.getItem("userCookieConsent");
-    if (userChoice === "denied") {
-      setCanSignIn(false);
-    }
-  }, []);
-
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setThemeIndex(parseInt(e.target.value, 10));
   };
 
   const handleSignIn = () => {
-    // Block sign-in if cookies are denied
-    if (!canSignIn) {
+    // Check if user denied cookies
+    const userChoice = localStorage.getItem("userCookieConsent");
+    if (userChoice === "denied") {
       alert("You must accept cookies to sign in.");
       return;
     }
-
     // Replace with your Cognito domain, client_id, callback, etc.
     window.location.href =
       "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com/login" +
@@ -129,8 +124,8 @@ export default function Home() {
     <main
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col items-center justify-center p-6 text-center transition-colors duration-500`}
     >
-      {/* Cookie banner */}
-      <CookieBanner />
+      {/* The blocking cookie overlay */}
+      <BlockingCookieOverlay />
 
       <motion.video
         initial={{ opacity: 0 }}
