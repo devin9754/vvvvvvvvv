@@ -5,45 +5,35 @@ import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 
-// A full-screen overlay that forces cookie consent decision
+// ---------- 1) Full-screen overlay forcing initial cookie choice ----------
 function BlockingCookieOverlay() {
   const [showOverlay, setShowOverlay] = useState(false);
 
   useEffect(() => {
     const userChoice = localStorage.getItem("userCookieConsent");
     if (!userChoice) {
-      // If no choice made, show overlay
+      // No choice → show overlay
       setShowOverlay(true);
-      // Optionally, disable scrolling on body
-      document.body.style.overflow = "hidden";
+      document.body.style.overflow = "hidden"; // disable scroll behind overlay
     }
   }, []);
 
   const handleAccept = () => {
     localStorage.setItem("userCookieConsent", "accepted");
     setShowOverlay(false);
-    document.body.style.overflow = "auto"; // restore scrolling
+    document.body.style.overflow = "auto";
   };
 
   const handleDeny = () => {
     localStorage.setItem("userCookieConsent", "denied");
     setShowOverlay(false);
-    document.body.style.overflow = "auto"; // restore scrolling
+    document.body.style.overflow = "auto";
   };
 
   if (!showOverlay) return null;
 
   return (
-    <div
-      className="
-        fixed inset-0 
-        bg-black/70 
-        z-50
-        flex 
-        items-center 
-        justify-center
-      "
-    >
+    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 text-center space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">
           We Value Your Privacy
@@ -55,13 +45,13 @@ function BlockingCookieOverlay() {
         <div className="flex justify-center space-x-4 pt-4">
           <button
             onClick={handleAccept}
-            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded"
+            className="bg-lime-300 hover:bg-lime-400 text-lime-900 font-medium px-4 py-2 rounded"
           >
             Accept
           </button>
           <button
             onClick={handleDeny}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded"
+            className="bg-rose-300 hover:bg-rose-400 text-rose-900 font-medium px-4 py-2 rounded"
           >
             Deny
           </button>
@@ -71,23 +61,73 @@ function BlockingCookieOverlay() {
   );
 }
 
-// Pastel theme definitions
+// ---------- 2) A small overlay for re-accepting if the user previously denied ----------
+function ReAcceptOverlay({
+  onAccept,
+  onClose,
+}: {
+  onAccept: () => void;
+  onClose: () => void;
+}) {
+  return (
+    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
+      <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 text-center space-y-4">
+        <h2 className="text-xl font-semibold text-gray-800">
+          Cookies Are Required to Sign In
+        </h2>
+        <p className="text-gray-600">
+          You previously denied cookies. To sign in, you must accept them. Would
+          you like to accept cookies now?
+        </p>
+        <div className="flex justify-center space-x-4 pt-4">
+          <button
+            onClick={onAccept}
+            className="bg-lime-300 hover:bg-lime-400 text-lime-900 font-medium px-4 py-2 rounded"
+          >
+            Accept
+          </button>
+          <button
+            onClick={onClose}
+            className="bg-rose-300 hover:bg-rose-400 text-rose-900 font-medium px-4 py-2 rounded"
+          >
+            Remain Denied
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ---------- Theme definitions ----------
 const THEMES = [
-  { name: "Pastel Pink", class: "bg-gradient-to-r from-pink-100 via-rose-50 to-purple-100" },
-  { name: "Blue Neon", class: "bg-gradient-to-r from-blue-100 via-sky-100 to-cyan-100" },
-  { name: "Green Light", class: "bg-gradient-to-r from-lime-100 via-green-50 to-teal-100" },
-  { name: "Fuchsia Mix", class: "bg-gradient-to-r from-fuchsia-100 via-pink-100 to-rose-100" },
-  { name: "Yellow Orange", class: "bg-gradient-to-r from-yellow-100 via-amber-50 to-orange-100" },
+  {
+    name: "Pastel Pink",
+    class: "bg-gradient-to-r from-pink-100 via-rose-50 to-purple-100",
+  },
+  {
+    name: "Blue Neon",
+    class: "bg-gradient-to-r from-blue-100 via-sky-100 to-cyan-100",
+  },
+  {
+    name: "Green Light",
+    class: "bg-gradient-to-r from-lime-100 via-green-50 to-teal-100",
+  },
+  {
+    name: "Fuchsia Mix",
+    class: "bg-gradient-to-r from-fuchsia-100 via-pink-100 to-rose-100",
+  },
+  {
+    name: "Yellow Orange",
+    class: "bg-gradient-to-r from-yellow-100 via-amber-50 to-orange-100",
+  },
 ];
 
+// ---------- MAIN HOME COMPONENT ----------
 export default function Home() {
+  // By default, set the pink theme (index 0) on landing
   const [themeIndex, setThemeIndex] = useState(0);
-
-  // Pick a random theme on mount
-  useEffect(() => {
-    const randomIndex = Math.floor(Math.random() * THEMES.length);
-    setThemeIndex(randomIndex);
-  }, []);
+  // Show or hide the "re-accept" overlay
+  const [showReAccept, setShowReAccept] = useState(false);
 
   // If user tries to go "back" after logout, force reload
   useEffect(() => {
@@ -104,14 +144,15 @@ export default function Home() {
     setThemeIndex(parseInt(e.target.value, 10));
   };
 
+  // When user clicks Sign In
   const handleSignIn = () => {
-    // Check if user denied cookies
     const userChoice = localStorage.getItem("userCookieConsent");
     if (userChoice === "denied") {
-      alert("You must accept cookies to sign in.");
+      // Show re-accept overlay
+      setShowReAccept(true);
       return;
     }
-    // Replace with your Cognito domain, client_id, callback, etc.
+    // Otherwise, proceed with Cognito sign-in
     window.location.href =
       "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com/login" +
       "?client_id=4a8r52l7d5267hle2liar1nr6p" +
@@ -120,12 +161,33 @@ export default function Home() {
       "&redirect_uri=https%3A%2F%2Fdigimodels.store%2Fcallback";
   };
 
+  // If user chooses to accept after previously denying
+  const handleReAcceptCookies = () => {
+    localStorage.setItem("userCookieConsent", "accepted");
+    setShowReAccept(false);
+    // Optionally go directly to sign in:
+    // handleSignIn();
+  };
+
+  // If user wants to remain denied after the second prompt
+  const handleRemainDenied = () => {
+    setShowReAccept(false);
+  };
+
   return (
     <main
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col items-center justify-center p-6 text-center transition-colors duration-500`}
     >
-      {/* The blocking cookie overlay */}
+      {/* The initial blocking overlay if user never made a choice */}
       <BlockingCookieOverlay />
+
+      {/* A second overlay if user tries to sign in but previously denied */}
+      {showReAccept && (
+        <ReAcceptOverlay
+          onAccept={handleReAcceptCookies}
+          onClose={handleRemainDenied}
+        />
+      )}
 
       <motion.video
         initial={{ opacity: 0 }}
