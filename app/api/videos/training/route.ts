@@ -3,11 +3,11 @@ import AWS from "aws-sdk";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-// 1) Use environment variables for region, or fallback defaults:
+// Use environment variables for region, or fallback
 const COGNITO_REGION = process.env.AWS_REGION || "us-east-1";
 const S3_REGION = process.env.S3_REGION || "us-west-1";
 
-// 2) Cognito client to verify group membership:
+// 1) Cognito client to check group membership
 const cognito = new AWS.CognitoIdentityServiceProvider({
   region: COGNITO_REGION,
   credentials: {
@@ -16,7 +16,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
   },
 });
 
-// 3) S3 client for presigned URLs:
+// 2) S3 client for generating a signed URL
 const s3 = new S3Client({
   region: S3_REGION,
   credentials: {
@@ -25,38 +25,39 @@ const s3 = new S3Client({
   },
 });
 
-// 4) Name of your private S3 bucket & object key
+// The name of your private S3 bucket & object
 const BUCKET_NAME = "digimodels-members";
 const VIDEO_KEY = "EPD_Short_Reels_03.mp4";
 
-// 5) Our GET route
+// The name of your Cognito user pool group that grants access
+const REQUIRED_GROUP = "PaidMembers";
+
 export async function GET(request: NextRequest) {
+  // 1) Check for access_token cookie
   const token = request.cookies.get("access_token")?.value;
   if (!token) {
-    // Not logged in
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
-  // Check user in Cognito
+  // 2) Fetch user details from Cognito
   let userData;
   try {
     userData = await cognito.getUser({ AccessToken: token }).promise();
   } catch (err) {
-    console.error("Error fetching user from Cognito:", err);
+    console.error("Error calling cognito.getUser:", err);
     return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 
-  // Attempt to find group membership in user attributes
+  // 3) Check the "cognito:groups" attribute
   const groupAttr = userData.UserAttributes?.find(
     (attr) => attr.Name === "cognito:groups"
   );
-
-  // If none, user’s not in any group
   if (!groupAttr?.Value) {
+    // No group info → user has no groups
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
 
-  // Could be a JSON array or string. Attempt parse:
+  // The groupAttr might be JSON array or a single string
   let groupList: string[] = [];
   try {
     groupList = JSON.parse(groupAttr.Value);
@@ -64,12 +65,12 @@ export async function GET(request: NextRequest) {
     groupList = [groupAttr.Value];
   }
 
-  // Only "PaidMembers" is allowed. Adjust name if needed.
-  if (!groupList.includes("PaidMembers")) {
+  // 4) Ensure the user is in our required group
+  if (!groupList.includes(REQUIRED_GROUP)) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
 
-  // Generate the presigned URL (1-hour expiration)
+  // 5) Generate a short-lived presigned URL (1 hour) for the private video
   try {
     const command = new GetObjectCommand({
       Bucket: BUCKET_NAME,
@@ -77,7 +78,6 @@ export async function GET(request: NextRequest) {
     });
     const signedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
 
-    // Return { signedUrl } to the client
     return NextResponse.json({ signedUrl });
   } catch (error) {
     console.error("Error generating signed URL:", error);
