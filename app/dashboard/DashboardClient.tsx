@@ -4,10 +4,6 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
-// Example public link to a video in your bucket (currently set public for MVP).
-const PUBLIC_VIDEO_URL =
-  "https://digimodels-members.s3.us-west-1.amazonaws.com/EPD_Short_Reels_03.mp4";
-
 // Pastel theme definitions:
 const THEMES = [
   {
@@ -36,8 +32,12 @@ export default function DashboardClient() {
   // Track which pastel theme is active
   const [themeIndex, setThemeIndex] = useState(0);
 
-  // For the MVP, we'll simply reveal the "public" video after user clicks a button
+  // Our final “premium” video URL once we fetch a presigned link
+  const [premiumUrl, setPremiumUrl] = useState<string | null>(null);
   const [showPaidVideo, setShowPaidVideo] = useState(false);
+
+  // For displaying an error if user is unauthorized or token is invalid
+  const [errorMsg, setErrorMsg] = useState("");
 
   // On mount, load theme from localStorage
   useEffect(() => {
@@ -73,6 +73,26 @@ export default function DashboardClient() {
     localStorage.setItem("themeIndex", newIndex.toString());
   };
 
+  // This function calls our secured route to get the presigned URL
+  const handleShowPaidVideo = async () => {
+    setErrorMsg(""); // Clear previous errors
+    try {
+      const res = await fetch("/videos/training"); // calls app/videos/training/route.ts
+      if (!res.ok) {
+        // e.g. 403, 401, etc.
+        const data = await res.json();
+        setErrorMsg(data?.error || "Unknown error fetching video.");
+        return;
+      }
+      const data = await res.json();
+      setPremiumUrl(data.signedUrl);
+      setShowPaidVideo(true);
+    } catch (error) {
+      console.error("Error fetching premium video link:", error);
+      setErrorMsg("Something went wrong fetching the premium video.");
+    }
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 10 }}
@@ -96,7 +116,7 @@ export default function DashboardClient() {
         </form>
       </header>
 
-      {/* Example "hero" video (public) */}
+      {/* Example "hero" video (public or placeholder) */}
       <section className="py-4">
         <div className="relative w-full max-w-xl mx-auto px-4">
           <video
@@ -169,27 +189,34 @@ export default function DashboardClient() {
             </p>
           </div>
 
-          {/* MVP: Publicly accessible "premium" video */}
+          {/* Now a truly secured Premium Video */}
           <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
-              Access Premium Training Video (MVP)
+              Access Premium Training Video
             </h3>
             <p className="text-gray-600 mb-4">
-              Click the button to reveal a publicly accessible video (S3 bucket
-              made public).
+              Click the button to fetch a private presigned URL (if authorized).
             </p>
+
+            {errorMsg && (
+              <div className="text-red-600 font-semibold mb-2">
+                {errorMsg}
+              </div>
+            )}
+
             {!showPaidVideo && (
               <button
-                onClick={() => setShowPaidVideo(true)}
+                onClick={handleShowPaidVideo}
                 className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold px-6 py-3 rounded-full shadow-xl transform hover:scale-105 transition"
               >
                 Watch Premium Video
               </button>
             )}
-            {showPaidVideo && (
+
+            {showPaidVideo && premiumUrl && (
               <div className="mt-4 w-full max-w-md mx-auto">
                 <video
-                  src={PUBLIC_VIDEO_URL}
+                  src={premiumUrl}
                   controls
                   autoPlay
                   className="w-full rounded-md shadow-md object-contain"

@@ -3,11 +3,11 @@ import AWS from "aws-sdk";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-// Use environment variables for region, or fallback
+// 1) Use environment variables for region, or fallback defaults:
 const COGNITO_REGION = process.env.AWS_REGION || "us-east-1";
 const S3_REGION = process.env.S3_REGION || "us-west-1";
 
-// 1) Cognito client to check group membership
+// 2) Cognito client to verify group membership:
 const cognito = new AWS.CognitoIdentityServiceProvider({
   region: COGNITO_REGION,
   credentials: {
@@ -16,7 +16,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
   },
 });
 
-// 2) S3 client for generating a signed URL
+// 3) S3 client for presigned URLs:
 const s3 = new S3Client({
   region: S3_REGION,
   credentials: {
@@ -25,16 +25,19 @@ const s3 = new S3Client({
   },
 });
 
-// The name of your private S3 bucket & object
+// 4) Name of your private S3 bucket & object key
 const BUCKET_NAME = "digimodels-members";
 const VIDEO_KEY = "EPD_Short_Reels_03.mp4";
 
+// 5) Our GET route
 export async function GET(request: NextRequest) {
   const token = request.cookies.get("access_token")?.value;
   if (!token) {
+    // Not logged in
     return NextResponse.json({ error: "Not authenticated" }, { status: 401 });
   }
 
+  // Check user in Cognito
   let userData;
   try {
     userData = await cognito.getUser({ AccessToken: token }).promise();
@@ -43,36 +46,38 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
   }
 
-  // Attempt to find "cognito:groups"
+  // Attempt to find group membership in user attributes
   const groupAttr = userData.UserAttributes?.find(
     (attr) => attr.Name === "cognito:groups"
   );
 
-  // If no group attribute, user not in any group
+  // If none, user’s not in any group
   if (!groupAttr?.Value) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
 
+  // Could be a JSON array or string. Attempt parse:
   let groupList: string[] = [];
   try {
-    // Sometimes it's a JSON array, sometimes a string
     groupList = JSON.parse(groupAttr.Value);
   } catch {
     groupList = [groupAttr.Value];
   }
 
-  // If your group is called "PaidMembers", check that
+  // Only "PaidMembers" is allowed. Adjust name if needed.
   if (!groupList.includes("PaidMembers")) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
 
-  // Generate signed URL for 1 hour
+  // Generate the presigned URL (1-hour expiration)
   try {
     const command = new GetObjectCommand({
       Bucket: BUCKET_NAME,
       Key: VIDEO_KEY,
     });
     const signedUrl = await getSignedUrl(s3, command, { expiresIn: 3600 });
+
+    // Return { signedUrl } to the client
     return NextResponse.json({ signedUrl });
   } catch (error) {
     console.error("Error generating signed URL:", error);
