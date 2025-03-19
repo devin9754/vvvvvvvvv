@@ -77,7 +77,7 @@ export default function DashboardClient() {
   const handleShowPaidVideo = async () => {
     setErrorMsg(""); // Clear previous errors
     try {
-      const res = await fetch("/videos/training"); // calls app/videos/training/route.ts
+      const res = await fetch("/api/videos/training"); // calls app/api/videos/training/route.ts
       if (!res.ok) {
         // e.g. 403, 401, etc.
         const data = await res.json();
