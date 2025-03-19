@@ -4,17 +4,17 @@ import { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import "./globals.css";
 
-// ---------- 1) Full-screen overlay forcing initial cookie choice ----------
+// -- 1) Full-screen overlay for initial cookie consent --
 function BlockingCookieOverlay() {
   const [showOverlay, setShowOverlay] = useState(false);
 
   useEffect(() => {
     const userChoice = localStorage.getItem("userCookieConsent");
     if (!userChoice) {
-      // No choice → show overlay
       setShowOverlay(true);
-      document.body.style.overflow = "hidden"; // disable scroll behind overlay
+      document.body.style.overflow = "hidden"; // disable scrolling behind overlay
     }
   }, []);
 
@@ -33,7 +33,7 @@ function BlockingCookieOverlay() {
   if (!showOverlay) return null;
 
   return (
-    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 text-center space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">
           We Value Your Privacy
@@ -61,7 +61,7 @@ function BlockingCookieOverlay() {
   );
 }
 
-// ---------- 2) A small overlay for re-accepting if the user previously denied ----------
+// -- 2) A smaller overlay if user tries to sign in after denying --
 function ReAcceptOverlay({
   onAccept,
   onClose,
@@ -70,7 +70,7 @@ function ReAcceptOverlay({
   onClose: () => void;
 }) {
   return (
-    <div className="fixed inset-0 bg-black/70 z-50 flex items-center justify-center">
+    <div className="fixed inset-0 bg-black/60 z-50 flex items-center justify-center">
       <div className="bg-white rounded-lg p-6 max-w-md w-full mx-4 text-center space-y-4">
         <h2 className="text-xl font-semibold text-gray-800">
           Cookies Are Required to Sign In
@@ -98,7 +98,7 @@ function ReAcceptOverlay({
   );
 }
 
-// ---------- Theme definitions ----------
+// -- Pastel theme definitions --
 const THEMES = [
   {
     name: "Pastel Pink",
@@ -122,12 +122,16 @@ const THEMES = [
   },
 ];
 
-// ---------- MAIN HOME COMPONENT ----------
-export default function Home() {
-  // By default, set the pink theme (index 0) on landing
+// -- MAIN PAGE COMPONENT --
+export default function HomePage() {
   const [themeIndex, setThemeIndex] = useState(0);
-  // Show or hide the "re-accept" overlay
   const [showReAccept, setShowReAccept] = useState(false);
+
+  // Default to "Pastel Pink" theme
+  useEffect(() => {
+    // Just set it once on mount
+    setThemeIndex(0);
+  }, []);
 
   // If user tries to go "back" after logout, force reload
   useEffect(() => {
@@ -140,11 +144,7 @@ export default function Home() {
     return () => window.removeEventListener("pageshow", handlePageShow);
   }, []);
 
-  const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setThemeIndex(parseInt(e.target.value, 10));
-  };
-
-  // When user clicks Sign In
+  // Called when user clicks "Sign In"
   const handleSignIn = () => {
     const userChoice = localStorage.getItem("userCookieConsent");
     if (userChoice === "denied") {
@@ -161,15 +161,15 @@ export default function Home() {
       "&redirect_uri=https%3A%2F%2Fdigimodels.store%2Fcallback";
   };
 
-  // If user chooses to accept after previously denying
+  // After user re-accepts from the second prompt
   const handleReAcceptCookies = () => {
     localStorage.setItem("userCookieConsent", "accepted");
     setShowReAccept(false);
-    // Optionally go directly to sign in:
+    // Optionally redirect them to sign in again:
     // handleSignIn();
   };
 
-  // If user wants to remain denied after the second prompt
+  // If user remains denied after second prompt
   const handleRemainDenied = () => {
     setShowReAccept(false);
   };
@@ -178,10 +178,10 @@ export default function Home() {
     <main
       className={`${THEMES[themeIndex].class} min-h-screen w-full flex flex-col items-center justify-center p-6 text-center transition-colors duration-500`}
     >
-      {/* The initial blocking overlay if user never made a choice */}
+      {/* The blocking overlay if user never made a choice */}
       <BlockingCookieOverlay />
 
-      {/* A second overlay if user tries to sign in but previously denied */}
+      {/* The second overlay if user tries to sign in but had denied */}
       {showReAccept && (
         <ReAcceptOverlay
           onAccept={handleReAcceptCookies}
@@ -235,18 +235,7 @@ export default function Home() {
               >
                 Get Started
               </Button>
-              <select
-                aria-label="Theme Selection"
-                value={themeIndex}
-                onChange={handleThemeSelect}
-                className="border border-purple-300 rounded-md px-3 py-2 text-purple-700"
-              >
-                {THEMES.map((theme, idx) => (
-                  <option key={idx} value={idx}>
-                    {theme.name}
-                  </option>
-                ))}
-              </select>
+              {/* If you want a theme selector, you can place it here */}
             </div>
           </CardContent>
         </Card>
