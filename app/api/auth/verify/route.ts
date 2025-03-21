@@ -1,18 +1,18 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
-  console.log("Logout GET triggered");
-  const response = NextResponse.redirect("https://digimodels.store/");
-  response.cookies.set("access_token", "", { path: "/", maxAge: 0 });
-  // Set no-cache headers to force reload
-  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
-  return response;
-}
+export async function GET(request: NextRequest) {
+  // Grab the cookie from the request
+  const token = request.cookies.get("access_token")?.value;
+  if (!token) {
+    return NextResponse.json({ error: "No valid token" }, { status: 401 });
+  }
 
-export async function POST() {
-  console.log("Logout POST triggered");
-  const response = NextResponse.redirect("https://digimodels.store/");
-  response.cookies.set("access_token", "", { path: "/", maxAge: 0 });
-  response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate");
-  return response;
+  // Optionally call Cognito to verify deeper checks:
+  // try {
+  //   const userData = await cognito.getUser({ AccessToken: token }).promise();
+  // } catch (err) {
+  //   return NextResponse.json({ error: "Failed to fetch user" }, { status: 500 });
+  // }
+
+  return NextResponse.json({ success: true });
 }
