@@ -4,8 +4,8 @@ import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
 // Use environment variables for region, or fallback
-const COGNITO_REGION = process.env.AWS_REGION || "us-east-1";
-const S3_REGION = process.env.S3_REGION || "us-west-1";
+const COGNITO_REGION = process.env.AWS_REGION_COGNITO || "us-west-1";
+const S3_REGION = process.env.AWS_REGION_S3 || "us-west-1";
 
 // 1) Cognito client to check group membership
 const cognito = new AWS.CognitoIdentityServiceProvider({
