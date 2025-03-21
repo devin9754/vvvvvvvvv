@@ -154,8 +154,8 @@ export default function HomePage() {
     }
     // Otherwise, proceed with Cognito sign-in
     window.location.href =
-      "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com/login" +
-      "?client_id=4a8r52l7d5267hle2liar1nr6p" +
+      "https://us-west-1owjen8id2.auth.us-west-1.amazoncognito.com/login" +
+      "?client_id=nv14cnivba0jp52p93krnisat" +
       "&response_type=code" +
       "&scope=email+openid+phone" +
       "&redirect_uri=https%3A%2F%2Fdigimodels.store%2Fcallback";

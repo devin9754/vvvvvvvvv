@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
-const COGNITO_DOMAIN = "https://us-east-1le1onanpp.auth.us-east-1.amazoncognito.com";
-const CLIENT_ID = "4a8r52l7d5267hle2liar1nr6p";
-const CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET 
+// Replace with your new domain & client info
+const COGNITO_DOMAIN = "https://us-west-1owjen8id2.auth.us-west-1.amazoncognito.com";
+const CLIENT_ID = "nv14cnivba0jp52p93krnisat";
+// If your new app client also has a secret, put it here:
+const CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET; 
 const REDIRECT_URI = "https://digimodels.store/callback";
 
 export async function GET(request: Request) {
@@ -20,6 +22,7 @@ export async function GET(request: Request) {
   params.append("code", code);
   params.append("redirect_uri", REDIRECT_URI);
 
+  // If you do have a client secret, include Basic Auth
   const basicAuth = Buffer.from(`${CLIENT_ID}:${CLIENT_SECRET}`).toString("base64");
 
   try {
@@ -41,6 +44,7 @@ export async function GET(request: Request) {
     const tokenSet = await tokenResponse.json();
     const accessToken = tokenSet.access_token;
 
+    // Redirect to your dashboard with a new cookie
     const response = NextResponse.redirect("https://digimodels.store/dashboard");
     response.cookies.set("access_token", accessToken || "", {
       path: "/",
