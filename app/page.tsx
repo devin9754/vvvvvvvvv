@@ -151,9 +151,7 @@ export default function HomePage() {
       return;
     }
 
-    // Make sure this domain & client ID match your new user pool in N. California (us-west-1).
-    // Also ensure you have added https://digimodels.store/callback
-    // in the "Allowed callback URLs" for the new app client.
+    // Using the new domain in us-west-1
     window.location.href =
       "https://us-west-1owjen8id2.auth.us-west-1.amazoncognito.com/login" +
       "?client_id=nv14cnivba0jp52p93krnisat" +
@@ -166,7 +164,6 @@ export default function HomePage() {
   const handleReAcceptCookies = () => {
     localStorage.setItem("userCookieConsent", "accepted");
     setShowReAccept(false);
-    // Optionally call handleSignIn() again if you want an immediate redirect
   };
 
   // If user remains denied after second prompt

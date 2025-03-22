@@ -1,13 +1,12 @@
 import { NextResponse } from "next/server";
 import { Buffer } from "buffer";
 
-// Use your new region + domain + client info
-// N. California is "us-west-1"
+// Your new domain & client info in us-west-1
 const COGNITO_DOMAIN = "https://us-west-1owjen8id2.auth.us-west-1.amazoncognito.com";
 const CLIENT_ID = "nv14cnivba0jp52p93krnisat";
-// If your app client has a secret, set it via environment or inline
+// If your app client has a secret, set it in an env var or inline
 const CLIENT_SECRET = process.env.COGNITO_CLIENT_SECRET || "";
-// Must match "Allowed callback URLs" in Cognito
+// Must match the "Allowed callback URLs" in Cognito
 const REDIRECT_URI = "https://digimodels.store/callback";
 
 export async function GET(request: Request) {

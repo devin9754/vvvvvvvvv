@@ -199,9 +199,7 @@ export default function DashboardClient() {
             </p>
 
             {errorMsg && (
-              <div className="text-red-600 font-semibold mb-2">
-                {errorMsg}
-              </div>
+              <div className="text-red-600 font-semibold mb-2">{errorMsg}</div>
             )}
 
             {!showPaidVideo && (
@@ -230,9 +228,7 @@ export default function DashboardClient() {
             <h3 className="text-xl font-semibold text-gray-800 mb-2">
               Theme Selection
             </h3>
-            <p className="text-gray-600 mb-2">
-              Pick your favorite pastel style:
-            </p>
+            <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
             <select
               aria-label="Theme Selection"
               value={themeIndex}
