@@ -4,12 +4,28 @@ import { motion } from "framer-motion";
 import React, { useState, useEffect } from "react";
 import PayPalButton from "./PayPalButton";
 
+// Pastel theme definitions
 const THEMES = [
-  { name: "Pastel Pink", class: "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100" },
-  { name: "Blue Neon", class: "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100" },
-  { name: "Green Light", class: "bg-gradient-to-br from-lime-100 via-green-50 to-teal-100" },
-  { name: "Fuchsia Mix", class: "bg-gradient-to-br from-fuchsia-100 via-pink-100 to-rose-100" },
-  { name: "Yellow Orange", class: "bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-100" },
+  {
+    name: "Pastel Pink",
+    class: "bg-gradient-to-br from-pink-100 via-rose-50 to-purple-100",
+  },
+  {
+    name: "Blue Neon",
+    class: "bg-gradient-to-br from-blue-100 via-sky-100 to-cyan-100",
+  },
+  {
+    name: "Green Light",
+    class: "bg-gradient-to-br from-lime-100 via-green-50 to-teal-100",
+  },
+  {
+    name: "Fuchsia Mix",
+    class: "bg-gradient-to-br from-fuchsia-100 via-pink-100 to-rose-100",
+  },
+  {
+    name: "Yellow Orange",
+    class: "bg-gradient-to-br from-yellow-100 via-amber-50 to-orange-100",
+  },
 ];
 
 export default function DashboardClient() {
@@ -35,10 +51,11 @@ export default function DashboardClient() {
       fetch("/api/auth/logout", { method: "POST" })
         .then(() => window.location.reload())
         .catch((err) => console.error("Auto-logout error:", err));
-    }, 600000); // 600,000 ms = 10 minutes
+    }, 600000); // 10 minutes
     return () => clearTimeout(logoutTimer);
   }, []);
 
+  // Theme handling
   const handleThemeSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const newIndex = parseInt(e.target.value, 10);
     setThemeIndex(newIndex);
@@ -85,22 +102,10 @@ export default function DashboardClient() {
         </div>
       </header>
 
-      {/* Hero Video Section (public video) */}
-      <section className="py-4">
-        <div className="relative w-full max-w-5xl mx-auto px-4">
-          <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
-            <video
-              className="absolute top-0 left-0 w-full h-full object-cover"
-              controls
-              autoPlay
-              muted
-              loop
-              playsInline
-              src="https://digimodels.s3.us-west-1.amazonaws.com/AdobeStock_499549744.mp4"
-            />
-          </div>
-        </div>
-      </section>
+      {/* 
+          Removed the old "Hero Video Section" with the cherry-blossom 
+          background here, as requested.
+      */}
 
       {/* Purchase Access Section */}
       <section className="py-6">
@@ -180,7 +185,7 @@ export default function DashboardClient() {
               )}
             </div>
 
-            {/* === NEW: Quiz Section === */}
+            {/* Quiz Section */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 Non-Anesthetic Pet Dental Quiz
@@ -202,11 +207,12 @@ export default function DashboardClient() {
                 </iframe>
               </div>
             </div>
-            {/* === END QUIZ SECTION === */}
 
             {/* Theme Selection */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
-              <h3 className="text-xl font-semibold text-gray-800 mb-2">Theme Selection</h3>
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Theme Selection
+              </h3>
               <p className="text-gray-600 mb-2">Pick your favorite pastel style:</p>
               <select
                 aria-label="Theme Selection"
