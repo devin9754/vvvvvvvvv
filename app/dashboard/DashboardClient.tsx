@@ -85,7 +85,7 @@ export default function DashboardClient() {
         </div>
       </header>
 
-      {/* Hero Video Section (public video as placeholder) */}
+      {/* Hero Video Section (public video) */}
       <section className="py-4">
         <div className="relative w-full max-w-5xl mx-auto px-4">
           <div className="relative pb-[56.25%] h-0 w-full overflow-hidden rounded-xl shadow-lg border border-purple-200/50">
@@ -170,10 +170,39 @@ export default function DashboardClient() {
               </button>
               {videoUrl && (
                 <div className="mt-4 w-full max-w-md mx-auto">
-                  <video src={videoUrl} controls autoPlay className="w-full rounded-md shadow-md object-contain" />
+                  <video
+                    src={videoUrl}
+                    controls
+                    autoPlay
+                    className="w-full rounded-md shadow-md object-contain"
+                  />
                 </div>
               )}
             </div>
+
+            {/* === NEW: Quiz Section === */}
+            <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
+              <h3 className="text-xl font-semibold text-gray-800 mb-2">
+                Non-Anesthetic Pet Dental Quiz
+              </h3>
+              <p className="text-gray-600 mb-4">
+                Test your knowledge by taking the quiz below!
+              </p>
+              <div className="overflow-auto">
+                <iframe
+                  src="https://docs.google.com/forms/d/e/1FAIpQLSeIS5flhXysGV_D9tRk2zCRZQjrVl96qEgE9jOyPywyXHmTrg/viewform?embedded=true"
+                  width="100%"
+                  height="1200"
+                  frameBorder="0"
+                  marginHeight={0}
+                  marginWidth={0}
+                  title="Non-Anesthetic Dental Quiz"
+                >
+                  Loading...
+                </iframe>
+              </div>
+            </div>
+            {/* === END QUIZ SECTION === */}
 
             {/* Theme Selection */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">

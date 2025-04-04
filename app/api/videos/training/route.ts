@@ -3,11 +3,11 @@ import AWS from "aws-sdk";
 import { S3Client, GetObjectCommand } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-// Use environment variables for regions, or fallback to "us-west-1"
+// Use environment variables for region or fallback
 const COGNITO_REGION = process.env.AWS_REGION_COGNITO || "us-west-1";
 const S3_REGION = process.env.AWS_REGION_S3 || "us-west-1";
 
-// Initialize the Cognito client with the correct region
+// Initialize the Cognito client
 const cognito = new AWS.CognitoIdentityServiceProvider({
   region: COGNITO_REGION,
   credentials: {
@@ -16,7 +16,7 @@ const cognito = new AWS.CognitoIdentityServiceProvider({
   },
 });
 
-// Initialize the S3 client for generating a presigned URL
+// Initialize the S3 client
 const s3 = new S3Client({
   region: S3_REGION,
   credentials: {
@@ -25,11 +25,9 @@ const s3 = new S3Client({
   },
 });
 
-// Define your S3 bucket name and video key
+// Bucket & Key
 const BUCKET_NAME = "digimodels-members";
 const VIDEO_KEY = "EPD_Short_Reels_03.mp4";
-
-// The required Cognito group name that grants access
 const REQUIRED_GROUP = "PaidMembers";
 
 export async function GET(request: NextRequest) {
@@ -55,16 +53,15 @@ export async function GET(request: NextRequest) {
     );
   }
 
-  // 3) Find the "cognito:groups" attribute in the returned user attributes.
+  // 3) Find the "cognito:groups" attribute.
   const groupAttr = userData.UserAttributes?.find(
     (attr) => attr.Name === "cognito:groups"
   );
   if (!groupAttr?.Value) {
-    // If no group info exists, the user isn't in any groups.
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
 
-  // 4) Parse the group attribute (it might be a JSON array or a single string)
+  // 4) Parse the group attribute
   let groupList: string[] = [];
   try {
     groupList = JSON.parse(groupAttr.Value);
@@ -72,12 +69,12 @@ export async function GET(request: NextRequest) {
     groupList = [groupAttr.Value];
   }
 
-  // 5) Ensure the user is in the required group.
+  // 5) Ensure user is in the required group
   if (!groupList.includes(REQUIRED_GROUP)) {
     return NextResponse.json({ error: "Payment required" }, { status: 403 });
   }
 
-  // 6) Generate a presigned URL for the private video (valid for 1 hour).
+  // 6) Generate presigned URL
   try {
     const command = new GetObjectCommand({
       Bucket: BUCKET_NAME,

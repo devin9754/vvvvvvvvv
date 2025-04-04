@@ -9,7 +9,12 @@ export default function PayPalButton() {
         action="https://www.paypal.com/ncp/payment/QCX6CM548NXDN"
         method="post"
         target="_blank"
-        style={{ display: "inline-grid", justifyItems: "center", alignContent: "start", gap: "0.5rem" }}
+        style={{
+          display: "inline-grid",
+          justifyItems: "center",
+          alignContent: "start",
+          gap: "0.5rem",
+        }}
       >
         <input
           type="submit"
