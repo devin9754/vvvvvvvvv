@@ -29,7 +29,6 @@ const THEMES = [
 
 export default function DashboardClient() {
   const [themeIndex, setThemeIndex] = useState(0);
-  const [videoUrl, setVideoUrl] = useState("");
 
   // Load saved theme from localStorage on mount
   useEffect(() => {
@@ -49,7 +48,8 @@ export default function DashboardClient() {
       fetch("/api/auth/logout", { method: "POST" })
         .then(() => window.location.reload())
         .catch((err) => console.error("Auto-logout error:", err));
-    }, 600000); // 600,000 ms = 10 minutes
+    }, 600000); // 10 minutes
+
     return () => clearTimeout(logoutTimer);
   }, []);
 
@@ -58,13 +58,6 @@ export default function DashboardClient() {
     const newIndex = parseInt(e.target.value, 10);
     setThemeIndex(newIndex);
     localStorage.setItem("themeIndex", newIndex.toString());
-  };
-
-  // Directly load the public video link
-  const handleLoadVideo = () => {
-    setVideoUrl(
-      "https://digimodels-members.s3.us-west-1.amazonaws.com/EPD_Short_Reels_03.mp4"
-    );
   };
 
   return (
@@ -154,30 +147,22 @@ export default function DashboardClient() {
               </p>
             </div>
 
-            {/* Load Public Video Section */}
+            {/* Training Video (always visible) */}
             <div className="p-5 rounded-xl shadow-md backdrop-blur-sm border border-gray-300">
               <h3 className="text-xl font-semibold text-gray-800 mb-2">
                 Access Training Video
               </h3>
               <p className="text-gray-600 mb-4">
-                Tap the button below to load your video.
+                Watch the non-anesthetic pet dental training video below.
               </p>
-              <button
-                onClick={handleLoadVideo}
-                className="bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold px-6 py-3 rounded-full shadow-xl transform hover:scale-105 transition"
-              >
-                Watch Video
-              </button>
-              {videoUrl && (
-                <div className="mt-4 w-full max-w-md mx-auto">
-                  <video
-                    src={videoUrl}
-                    controls
-                    autoPlay
-                    className="w-full rounded-md shadow-md object-contain"
-                  />
-                </div>
-              )}
+              <div className="mt-2 w-full max-w-xs sm:max-w-sm md:max-w-md mx-auto">
+                <video
+                  src="https://digimodels-members.s3.us-west-1.amazonaws.com/EPD_Short_Reels_03.mp4"
+                  controls
+                  className="w-full rounded-md shadow-md object-contain"
+                  preload="metadata"
+                />
+              </div>
             </div>
 
             {/* Quiz Section */}
@@ -197,6 +182,7 @@ export default function DashboardClient() {
                   marginHeight={0}
                   marginWidth={0}
                   title="Non-Anesthetic Dental Quiz"
+                  loading="lazy"
                 >
                   Loading...
                 </iframe>
